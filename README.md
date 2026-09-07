@@ -57,8 +57,8 @@ nagłówki, Inter na resztę. Zamiast kreskowych ramek i siatek wszystko siedzi
 na kartach, więc strona czyta się lekko mimo dużej ilości treści.
 
 Hero zostaje ciemne (bo takie jest zdjęcie), ale dolny gradient wygasza je do koloru
-tła, więc przejście do jasnej części nie ma szwu. Opis etapu i pasek postępu leżą
-na kafelkach z rozmytym tłem (`backdrop-filter`).
+tła, więc przejście do jasnej części nie ma szwu. Cała nawigacja po etapach mieści się
+w jednej pigułce z rozmytym tłem (`backdrop-filter`) przy dolnej krawędzi.
 
 Animacje:
 
