@@ -115,6 +115,9 @@ const tick = () => {
   smooth += (target - smooth) * (reduced ? 1 : 0.14);
   if (Math.abs(target - smooth) < 0.0004) smooth = target;
   apply(false);
+  // paralaksa jest wylacznie ozdoba — gdyby kiedykolwiek rzucila bledem,
+  // nie moze zabic petli, ktora obsluguje przewijanie hero
+  if (!reduced) { try { parallax(); } catch (e) {} }
   requestAnimationFrame(tick);
 };
 requestAnimationFrame(tick);
@@ -128,10 +131,65 @@ addEventListener('orientationchange', () => setTimeout(measure, 250));
 if ('ResizeObserver' in window) new ResizeObserver(measure).observe(hero);
 
 /* ————————————————— WEJSCIA SEKCJI ————————————————— */
+/* Kolejnosc w obrebie jednej siatki robi schodek — kazdy kolejny kafelek
+   startuje 75 ms po poprzednim (--i czyta transition-delay w CSS). */
+$$('.stats, .svc, .proc, .plans, .revs, .faq, .gal, .sec-head, .contact-grid').forEach(group => {
+  $$('.rise', group).forEach((el, i) => el.style.setProperty('--i', i));
+});
+
+/* Naglowki sekcji wjezdzaja zza maski — tekst chowamy w dodatkowym <i>,
+   ktory startuje przesuniety o wlasna wysokosc w dol. */
+$$('.sec-h2').forEach(h => {
+  if (h.querySelector('.mask')) return;
+  const inner = document.createElement('i');
+  inner.textContent = h.textContent;
+  const mask = document.createElement('span');
+  mask.className = 'mask';
+  mask.appendChild(inner);
+  h.textContent = '';
+  h.appendChild(mask);
+});
+
 const io = new IntersectionObserver(es => {
   es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
 }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
 $$('.rise').forEach(el => io.observe(el));
+
+/* ————————————————— LICZNIKI ————————————————— */
+const counters = $$('.stat b');
+const countIO = new IntersectionObserver(es => {
+  es.forEach(e => {
+    if (!e.isIntersecting) return;
+    countIO.unobserve(e.target);
+    const sup = e.target.querySelector('span');
+    const to = parseInt(e.target.textContent, 10);
+    if (!isFinite(to)) return;
+    if (reduced) { e.target.firstChild.textContent = to; return; }
+    const t0 = performance.now(), dur = 1400;
+    const step = now => {
+      const p = clamp((now - t0) / dur, 0, 1);
+      const eased = 1 - Math.pow(1 - p, 4);
+      e.target.firstChild.textContent = Math.round(to * eased);
+      if (p < 1) requestAnimationFrame(step);
+      else if (sup) sup.hidden = false;
+    };
+    if (sup) sup.hidden = true;
+    requestAnimationFrame(step);
+  });
+}, { threshold: .5 });
+counters.forEach(el => countIO.observe(el));
+
+/* ————————————————— DELIKATNA PARALAKSA W GALERII ————————————————— */
+var paraImgs = $$('.gal img');
+function parallax() {
+  for (const img of paraImgs) {
+    const r = img.parentElement.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > vh) continue;
+    const p = (r.top + r.height / 2 - vh / 2) / vh;   // -1 .. 1
+    // tylko zmienna CSS, zeby nie nadpisac skali z :hover
+    img.style.setProperty('--py', (p * -14).toFixed(2) + 'px');
+  }
+}
 
 /* ————————————————— FAQ ————————————————— */
 $$('.faq-i').forEach(item => {

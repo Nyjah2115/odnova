@@ -49,14 +49,38 @@ włączone `prefers-reduced-motion`, albo ekran węższy niż 760 px), strona pr
 na przenikanie pięciu statycznych klatek. Ten sam efekt, zero kosztu dekodowania wideo —
 i strona wygląda poprawnie także wtedy, gdy repozytorium sklonuje ktoś bez plików mp4.
 
+## Warstwa wizualna
+
+Jasna i spokojna: ciepła biel `#fbf8f4`, treść na białych kafelkach z miękkim cieniem
+i promieniem 26 px, jeden akcent (glina `#b4693f`) i para krojów — Fraunces na
+nagłówki, Inter na resztę. Zamiast kreskowych ramek i siatek wszystko siedzi
+na kartach, więc strona czyta się lekko mimo dużej ilości treści.
+
+Hero zostaje ciemne (bo takie jest zdjęcie), ale dolny gradient wygasza je do koloru
+tła, więc przejście do jasnej części nie ma szwu. Opis etapu i pasek postępu leżą
+na kafelkach z rozmytym tłem (`backdrop-filter`).
+
+Animacje:
+
+- kafelki wjeżdżają od dołu, a kolejne w tej samej siatce startują 75 ms po sobie
+  (JS ustawia `--i`, CSS przelicza to na `transition-delay`),
+- nagłówki sekcji wyjeżdżają zza maski — JS pakuje tekst w dodatkowy `<i>`,
+  który startuje przesunięty o własną wysokość,
+- liczby w sekcji z wskaźnikami odliczają od zera, gdy wejdą w kadr,
+- zdjęcia realizacji mają delikatną paralaksę (±14 px) liczoną w tej samej pętli
+  `requestAnimationFrame`, co hero — przez zmienną CSS, żeby nie kasować skali z `:hover`,
+- kafelki unoszą się pod kursorem, przyciski przesuwają strzałkę, plus w FAQ obraca się w krzyżyk.
+
+Wszystko wyłącza się przy `prefers-reduced-motion`.
+
 ## Reszta strony
 
-- **Liczby** — cztery wskaźniki na wejściu w treść.
-- **Zakres prac** — sześć kafli z listami konkretów.
-- **Proces** — pięć kroków z tygodniami, w których się dzieją.
+- **Liczby** — cztery kafelki z licznikami.
+- **Zakres prac** — sześć kart z ikonami i listami konkretów.
+- **Proces** — pięć kroków z numerem w kółku i tygodniem, w którym się dzieją.
 - **Realizacje** — suwak przed/po (te same `k1` i `k5`, co w hero) plus trzy kadry z etapów.
-- **Pakiety** — trzy poziomy cenowe za m².
-- **Opinie**, **FAQ** (akordeon), **formularz wyceny** (waliduje się, ale nic nie wysyła).
+- **Pakiety** — trzy karty cenowe, środkowa ciemna jako wyróżniona.
+- **Opinie** z inicjałami, **FAQ** (akordeon), **formularz wyceny** (waliduje się, ale nic nie wysyła).
 
 ## Struktura
 
