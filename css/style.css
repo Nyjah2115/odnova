@@ -80,6 +80,8 @@ p{ margin:0; }
   transition:opacity .6s var(--ease);
 }
 .nav.solid{ color:var(--ink); padding:14px var(--pad); }
+/* menu na jasnym tle — krzyzyk musi byc ciemny, nawet gdy nav stoi nad hero */
+body.menu-open .nav{ color:var(--ink); }
 .nav.solid::before{ opacity:1; }
 
 .brand{ display:flex; align-items:baseline; gap:10px; }

@@ -14,8 +14,6 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ————————————————— NAV ————————————————— */
 const nav = $('#nav');
-const setNav = () => nav.classList.toggle('solid', scrollY > 40);
-setNav();
 
 const burger = $('#burger');
 burger.addEventListener('click', () => document.body.classList.toggle('menu-open'));
@@ -44,6 +42,11 @@ const measure = () => {
   heroRange = Math.max(1, hero.offsetHeight - vh);
 };
 measure();
+
+/* Pasek nawigacji bieleje dopiero po ostatnim etapie — dopoki trwa hero,
+   nad ciemnym kadrem ma zostac przezroczysty. */
+const setNav = () => nav.classList.toggle('solid', scrollY > heroTop + heroRange - 8);
+setNav();
 
 /* --- czy mozemy scrubowac wideo? --- */
 const ready = v => new Promise(res => {
@@ -122,13 +125,14 @@ const tick = () => {
 };
 requestAnimationFrame(tick);
 
+const remeasure = () => { measure(); setNav(); };
 addEventListener('scroll', setNav, { passive: true });
-addEventListener('resize', measure);
-addEventListener('load', measure);
-addEventListener('orientationchange', () => setTimeout(measure, 250));
+addEventListener('resize', remeasure);
+addEventListener('load', remeasure);
+addEventListener('orientationchange', () => setTimeout(remeasure, 250));
 // wysokosc hero zalezy od vh, a ten potrafi sie zmienic pozniej
 // (pasek adresu na mobile, zmiana okna, docelowo tez zaladowanie fontow)
-if ('ResizeObserver' in window) new ResizeObserver(measure).observe(hero);
+if ('ResizeObserver' in window) new ResizeObserver(remeasure).observe(hero);
 
 /* ————————————————— WEJSCIA SEKCJI ————————————————— */
 /* Kolejnosc w obrebie jednej siatki robi schodek — kazdy kolejny kafelek
