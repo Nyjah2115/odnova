@@ -66,9 +66,6 @@ Animacje:
   (JS ustawia `--i`, CSS przelicza to na `transition-delay`),
 - nagłówki sekcji wyjeżdżają zza maski — JS pakuje tekst w dodatkowy `<i>`,
   który startuje przesunięty o własną wysokość,
-- liczby w sekcji z wskaźnikami odliczają od zera, gdy wejdą w kadr,
-- zdjęcia realizacji mają delikatną paralaksę (±14 px) liczoną w tej samej pętli
-  `requestAnimationFrame`, co hero — przez zmienną CSS, żeby nie kasować skali z `:hover`,
 - kafelki unoszą się pod kursorem, przyciski przesuwają strzałkę, plus w FAQ obraca się w krzyżyk.
 
 Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyślana tak,
@@ -77,8 +74,6 @@ Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyśl
 - **preloader** — znak firmowy, kreska dobijająca do 100% i licznik, a potem kurtyna
   odsłaniająca hero od dołu; pasek czeka na klatki i klipy hero, ale nie dłużej niż
   ~5 s, a niezależny `setTimeout` zdejmuje kurtynę nawet gdyby skrypt padł,
-- **własny kursor** — kropka z pierścieniem, `mix-blend-mode: difference`, pierścień
-  puchnie nad wszystkim klikalnym; włącza się tylko przy `pointer: fine`,
 - **pasek postępu strony** przy górnej krawędzi,
 - **taśma haseł** przewijana w kółko, zatrzymuje się pod kursorem,
 - **przypięta taśma realizacji** — sekcja wysoka na 340vh, pionowy scroll przekładany
@@ -90,7 +85,9 @@ Wszystko wyłącza się przy `prefers-reduced-motion`.
 
 ## Reszta strony
 
-- **Liczby** — cztery kafelki z licznikami.
+Po hero strona wchodzi od razu w zakres prac — sekcja ze statystykami („240 mieszkań",
+„12 lat") wypadła, bo na stronie pokazowej i tak były to liczby wzięte z sufitu.
+
 - **Zakres prac** — sześć kart z ikonami i listami konkretów.
 - **Proces** — pięć kroków z numerem w kółku i tygodniem, w którym się dzieją.
 - **Realizacje** — suwak przed/po (te same `k1` i `k5`, co w hero), a pod nim przypięta

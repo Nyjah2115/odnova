@@ -118,9 +118,8 @@ const tick = () => {
   smooth += (target - smooth) * (reduced ? 1 : 0.14);
   if (Math.abs(target - smooth) < 0.0004) smooth = target;
   apply(false);
-  // paralaksa jest wylacznie ozdoba — gdyby kiedykolwiek rzucila bledem,
+  // tasma i pasek postepu sa ozdoba — gdyby ktorakolwiek rzucila bledem,
   // nie moze zabic petli, ktora obsluguje przewijanie hero
-  if (!reduced) { try { parallax(); } catch (e) {} }
   try { strip(); pageProgress(); } catch (e) {}
   requestAnimationFrame(tick);
 };
@@ -138,7 +137,7 @@ if ('ResizeObserver' in window) new ResizeObserver(remeasure).observe(hero);
 /* ————————————————— WEJSCIA SEKCJI ————————————————— */
 /* Kolejnosc w obrebie jednej siatki robi schodek — kazdy kolejny kafelek
    startuje 75 ms po poprzednim (--i czyta transition-delay w CSS). */
-$$('.stats, .svc, .proc, .plans, .revs, .faq, .gal, .sec-head, .contact-grid').forEach(group => {
+$$('.svc, .proc, .plans, .revs, .faq, .sec-head, .contact-grid').forEach(group => {
   $$('.rise', group).forEach((el, i) => el.style.setProperty('--i', i));
 });
 
@@ -159,42 +158,6 @@ const io = new IntersectionObserver(es => {
   es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
 }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
 $$('.rise').forEach(el => io.observe(el));
-
-/* ————————————————— LICZNIKI ————————————————— */
-const counters = $$('.stat b');
-const countIO = new IntersectionObserver(es => {
-  es.forEach(e => {
-    if (!e.isIntersecting) return;
-    countIO.unobserve(e.target);
-    const sup = e.target.querySelector('span');
-    const to = parseInt(e.target.textContent, 10);
-    if (!isFinite(to)) return;
-    if (reduced) { e.target.firstChild.textContent = to; return; }
-    const t0 = performance.now(), dur = 1400;
-    const step = now => {
-      const p = clamp((now - t0) / dur, 0, 1);
-      const eased = 1 - Math.pow(1 - p, 4);
-      e.target.firstChild.textContent = Math.round(to * eased);
-      if (p < 1) requestAnimationFrame(step);
-      else if (sup) sup.hidden = false;
-    };
-    if (sup) sup.hidden = true;
-    requestAnimationFrame(step);
-  });
-}, { threshold: .5 });
-counters.forEach(el => countIO.observe(el));
-
-/* ————————————————— DELIKATNA PARALAKSA W GALERII ————————————————— */
-var paraImgs = $$('.gal img');
-function parallax() {
-  for (const img of paraImgs) {
-    const r = img.parentElement.getBoundingClientRect();
-    if (r.bottom < 0 || r.top > vh) continue;
-    const p = (r.top + r.height / 2 - vh / 2) / vh;   // -1 .. 1
-    // tylko zmienna CSS, zeby nie nadpisac skali z :hover
-    img.style.setProperty('--py', (p * -14).toFixed(2) + 'px');
-  }
-}
 
 /* ————————————————— FAQ ————————————————— */
 $$('.faq-i').forEach(item => {
@@ -314,31 +277,6 @@ addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft')  lbShow(lbAt - 1);
   if (e.key === 'ArrowRight') lbShow(lbAt + 1);
 });
-
-/* ————————————————— KURSOR —————————————————
-   Tylko dla myszy — na dotyku nie ma czego sledzic. */
-if (matchMedia('(pointer:fine)').matches && !reduced) {
-  const cur = $('#cursor');
-  let cx = innerWidth / 2, cy = innerHeight / 2, tx = cx, ty = cy, seen = false;
-
-  addEventListener('mousemove', e => {
-    tx = e.clientX; ty = e.clientY;
-    if (!seen) { cx = tx; cy = ty; seen = true; document.body.classList.add('has-cursor'); }
-  }, { passive: true });
-
-  const hot = 'a, button, .shot, .faq-q, .ba, input, select, textarea, label';
-  addEventListener('mouseover', e => {
-    document.body.classList.toggle('cursor-hot', !!e.target.closest(hot));
-  }, { passive: true });
-
-  const curTick = () => {
-    cx += (tx - cx) * 0.18;
-    cy += (ty - cy) * 0.18;
-    cur.style.transform = 'translate3d(' + cx.toFixed(1) + 'px,' + cy.toFixed(1) + 'px,0)';
-    requestAnimationFrame(curTick);
-  };
-  requestAnimationFrame(curTick);
-}
 
 /* ————————————————— MAGNETYCZNE PRZYCISKI ————————————————— */
 if (matchMedia('(pointer:fine)').matches && !reduced) {

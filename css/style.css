@@ -200,16 +200,6 @@ section{ position:relative; }
 }
 .tile:hover{ transform:translateY(-6px); box-shadow:var(--sh-2); border-color:transparent; }
 
-/* ---------- liczby ---------- */
-.stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
-.stat{ padding:32px 28px 30px; }
-.stat b{
-  font-family:var(--f-disp); font-size:clamp(36px,4.2vw,56px); font-weight:300; display:block; line-height:1;
-  letter-spacing:-.04em;
-}
-.stat b span{ color:var(--clay); font-size:.45em; vertical-align:super; margin-left:3px; }
-.stat p{ font-size:13px; color:var(--muted); margin-top:14px; line-height:1.6; }
-
 /* ---------- usługi ---------- */
 .svc{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
 .svc-item{ padding:34px 32px 36px; position:relative; overflow:hidden; }
@@ -275,21 +265,6 @@ section{ position:relative; }
   background:rgba(255,255,255,.9); backdrop-filter:blur(8px); box-shadow:var(--sh-1);
 }
 .ba-tag.l{ left:20px; } .ba-tag.r{ right:20px; }
-
-.gal{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:16px; }
-.gal figure{
-  margin:0; position:relative; overflow:hidden; aspect-ratio:4/3; border-radius:var(--r-s);
-  background:var(--bg-2); box-shadow:var(--sh-1);
-  transition:transform .65s var(--ease), box-shadow .65s var(--ease);
-}
-.gal figure:hover{ transform:translateY(-6px); box-shadow:var(--sh-2); }
-.gal img{ width:100%; height:100%; object-fit:cover; transform:scale(1.08) translateY(var(--py,0px)); transition:transform 1.4s var(--ease); }
-.gal figure:hover img{ transform:scale(1.14) translateY(var(--py,0px)); }
-.gal figcaption{
-  position:absolute; left:14px; bottom:14px; padding:8px 15px; border-radius:100px;
-  font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; font-weight:500;
-  background:rgba(255,255,255,.92); backdrop-filter:blur(8px); color:var(--ink);
-}
 
 /* ---------- pakiety ---------- */
 .plans{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; align-items:start; }
@@ -445,19 +420,8 @@ body.loaded .pre{ clip-path:inset(0 0 100% 0); opacity:0; pointer-events:none; }
 body:not(.loaded) .hero-h1, body:not(.loaded) .hero-bar, body:not(.loaded) .nav{ opacity:0; transform:translateY(22px); }
 
 /* ============================================================
-   KURSOR + PASEK POSTEPU STRONY
+   PASEK POSTEPU STRONY
    ============================================================ */
-.cursor{ position:fixed; top:0; left:0; z-index:9500; pointer-events:none; mix-blend-mode:difference; opacity:0; transition:opacity .4s; }
-body.has-cursor .cursor{ opacity:1; }
-.cur-dot, .cur-ring{ position:absolute; border-radius:50%; transform:translate(-50%,-50%); }
-.cur-dot{ width:6px; height:6px; background:#fff; }
-.cur-ring{
-  width:38px; height:38px; border:1px solid rgba(255,255,255,.55);
-  transition:width .35s var(--ease), height .35s var(--ease), border-color .35s, background .35s;
-}
-body.cursor-hot .cur-ring{ width:64px; height:64px; background:rgba(255,255,255,.14); border-color:transparent; }
-body.cursor-hot .cur-dot{ opacity:0; }
-
 .progress{
   position:fixed; top:0; left:0; height:2px; width:0; z-index:9600;
   background:linear-gradient(90deg,var(--clay),var(--clay-2)); border-radius:0 2px 2px 0;
@@ -582,12 +546,9 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   .svc{ grid-template-columns:repeat(2,1fr); }
   .plans{ grid-template-columns:1fr; }
   .revs{ grid-template-columns:1fr; }
-  .stats{ grid-template-columns:repeat(2,1fr); }
   .contact-grid{ grid-template-columns:1fr; }
   .proc-row{ grid-template-columns:84px 1fr; gap:24px; row-gap:14px; }
   .proc-row p{ grid-column:2; }
-  .gal{ grid-template-columns:1fr 1fr; }
-  .gal figure:last-child{ grid-column:span 2; aspect-ratio:16/7; }
 }
 @media (max-width:760px){
   .nav-links{ display:none; }
@@ -600,8 +561,6 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   .stage-copy{ width:clamp(160px,52vw,220px); }
   .rail{ width:clamp(70px,20vw,104px); gap:5px; }
   .svc{ grid-template-columns:1fr; }
-  .gal{ grid-template-columns:1fr; }
-  .gal figure:last-child{ grid-column:auto; aspect-ratio:4/3; }
   .f-row{ grid-template-columns:1fr; }
   .form{ padding:30px 24px; }
   .proc-row{ padding:24px 24px; }
@@ -621,6 +580,5 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   .mask > i{ transform:none; }
   .wipe{ clip-path:none; }
   .marquee-in{ animation:none; }
-  .cursor{ display:none; }
   .pre{ display:none; }
 }
