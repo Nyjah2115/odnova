@@ -96,15 +96,6 @@ body.menu-open .nav{ color:var(--ink); }
 .nav-links a:hover{ opacity:1; background:rgba(27,24,21,.06); }
 .nav.solid .nav-links a:hover{ background:var(--sand-2); }
 
-.nav-cta{
-  display:inline-flex; align-items:center; gap:9px; font-size:13px; font-weight:500;
-  padding:12px 22px; border-radius:100px; background:var(--clay); color:#fff;
-  box-shadow:0 6px 20px -8px rgba(180,105,63,.7);
-  transition:transform .45s var(--ease), box-shadow .45s var(--ease), background .35s;
-}
-.nav-cta:hover{ transform:translateY(-2px); background:var(--clay-2); box-shadow:0 12px 28px -10px rgba(180,105,63,.8); }
-.nav-cta i{ width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.85); display:block; }
-
 .burger{ display:none; width:42px; height:42px; border-radius:50%; position:relative; }
 .burger span{
   position:absolute; left:12px; width:18px; height:1.5px; background:currentColor; border-radius:2px;
@@ -463,7 +454,7 @@ section{ position:relative; }
   .gal figure:last-child{ grid-column:span 2; aspect-ratio:16/7; }
 }
 @media (max-width:760px){
-  .nav-links,.nav-cta{ display:none; }
+  .nav-links{ display:none; }
   .burger{ display:block; }
   .hero{ height:420vh; }
   .hero-top{ position:static; margin-top:auto; }
