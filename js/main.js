@@ -121,11 +121,12 @@ const tick = () => {
   // paralaksa jest wylacznie ozdoba — gdyby kiedykolwiek rzucila bledem,
   // nie moze zabic petli, ktora obsluguje przewijanie hero
   if (!reduced) { try { parallax(); } catch (e) {} }
+  try { strip(); pageProgress(); } catch (e) {}
   requestAnimationFrame(tick);
 };
 requestAnimationFrame(tick);
 
-const remeasure = () => { measure(); setNav(); };
+const remeasure = () => { measure(); measureStrip(); setNav(); };
 addEventListener('scroll', setNav, { passive: true });
 addEventListener('resize', remeasure);
 addEventListener('load', remeasure);
@@ -243,5 +244,173 @@ if (form) {
     form.reset();
   });
 }
+
+
+
+
+/* ————————————————— PASEK POSTEPU STRONY ————————————————— */
+const bar = $('#progress');
+function pageProgress() {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  bar.style.width = (max > 0 ? clamp(scrollY / max, 0, 1) * 100 : 0).toFixed(2) + '%';
+}
+
+/* ————————————————— TASMA REALIZACJI —————————————————
+   Sekcja jest wysoka na kilka ekranow i przypieta; pionowy scroll po niej
+   przekladamy na przesuniecie tasmy w bok. */
+const stripEl    = $('#strip');
+const stripTrack = $('#stripTrack');
+const stripNow   = $('#stripNow');
+const shots      = $$('.shot');
+let stripTop = 0, stripRange = 1, stripMax = 0, stripX = 0, stripCur = -1;
+
+function measureStrip() {
+  if (!stripEl) return;
+  const r = stripEl.getBoundingClientRect();
+  stripTop   = r.top + scrollY;
+  stripRange = Math.max(1, stripEl.offsetHeight - innerHeight);
+  const pad  = parseFloat(getComputedStyle(stripTrack).paddingLeft) || 0;
+  stripMax   = Math.max(0, stripTrack.scrollWidth - innerWidth + pad);
+}
+measureStrip();
+
+function strip() {
+  if (!stripEl || !stripMax) return;
+  const p  = clamp((scrollY - stripTop) / stripRange, 0, 1);
+  const to = -p * stripMax;
+  stripX  += (to - stripX) * (reduced ? 1 : 0.12);
+  stripTrack.style.transform = 'translate3d(' + stripX.toFixed(1) + 'px,0,0)';
+
+  const idx = Math.min(shots.length - 1, Math.round(p * (shots.length - 1)));
+  if (idx !== stripCur) {
+    stripCur = idx;
+    stripNow.textContent = String(idx + 1).padStart(2, '0');
+  }
+}
+
+/* ————————————————— LIGHTBOX ————————————————— */
+const lb = $('#lb'), lbImg = $('#lbImg'), lbTitle = $('#lbTitle'), lbMeta = $('#lbMeta');
+let lbAt = 0;
+
+const lbShow = i => {
+  lbAt = (i + shots.length) % shots.length;
+  const fig = shots[lbAt], img = $('img', fig);
+  lbImg.src = img.src;
+  lbImg.alt = img.alt;
+  lbTitle.textContent = $('figcaption b', fig).textContent;
+  lbMeta.textContent  = $('figcaption span', fig).textContent;
+};
+const lbOpen = i => { lbShow(i); document.body.classList.add('lb-open'); };
+const lbClose = () => document.body.classList.remove('lb-open');
+
+shots.forEach((fig, i) => fig.addEventListener('click', () => lbOpen(i)));
+$('#lbX').addEventListener('click', lbClose);
+$('#lbPrev').addEventListener('click', e => { e.stopPropagation(); lbShow(lbAt - 1); });
+$('#lbNext').addEventListener('click', e => { e.stopPropagation(); lbShow(lbAt + 1); });
+lb.addEventListener('click', e => { if (e.target === lb) lbClose(); });
+addEventListener('keydown', e => {
+  if (!document.body.classList.contains('lb-open')) return;
+  if (e.key === 'Escape')     lbClose();
+  if (e.key === 'ArrowLeft')  lbShow(lbAt - 1);
+  if (e.key === 'ArrowRight') lbShow(lbAt + 1);
+});
+
+/* ————————————————— KURSOR —————————————————
+   Tylko dla myszy — na dotyku nie ma czego sledzic. */
+if (matchMedia('(pointer:fine)').matches && !reduced) {
+  const cur = $('#cursor');
+  let cx = innerWidth / 2, cy = innerHeight / 2, tx = cx, ty = cy, seen = false;
+
+  addEventListener('mousemove', e => {
+    tx = e.clientX; ty = e.clientY;
+    if (!seen) { cx = tx; cy = ty; seen = true; document.body.classList.add('has-cursor'); }
+  }, { passive: true });
+
+  const hot = 'a, button, .shot, .faq-q, .ba, input, select, textarea, label';
+  addEventListener('mouseover', e => {
+    document.body.classList.toggle('cursor-hot', !!e.target.closest(hot));
+  }, { passive: true });
+
+  const curTick = () => {
+    cx += (tx - cx) * 0.18;
+    cy += (ty - cy) * 0.18;
+    cur.style.transform = 'translate3d(' + cx.toFixed(1) + 'px,' + cy.toFixed(1) + 'px,0)';
+    requestAnimationFrame(curTick);
+  };
+  requestAnimationFrame(curTick);
+}
+
+/* ————————————————— MAGNETYCZNE PRZYCISKI ————————————————— */
+if (matchMedia('(pointer:fine)').matches && !reduced) {
+  $$('.btn').forEach(b => {
+    b.addEventListener('mousemove', e => {
+      const r = b.getBoundingClientRect();
+      const dx = (e.clientX - r.left - r.width / 2) / r.width;
+      const dy = (e.clientY - r.top - r.height / 2) / r.height;
+      b.style.transform = 'translate(' + (dx * 10).toFixed(1) + 'px,' + (dy * 6).toFixed(1) + 'px)';
+    });
+    b.addEventListener('mouseleave', () => { b.style.transform = ''; });
+  });
+}
+
+/* ————————————————— PRELOADER —————————————————
+   Pasek dobija do 100% dopiero, gdy krytyczne media sa gotowe, ale nie trzyma
+   ekranu dluzej niz kilka sekund — nawet jesli cos sie nie doczyta. */
+(() => {
+  const preBar = $('#preBar'), preNum = $('#preNum');
+  const assets = [...$$('.stage img'), ...$$('.stage video')];
+  let done = 0;
+  const total = Math.max(1, assets.length);
+
+  const bump = () => { done++; };
+  assets.forEach(a => {
+    if (a.tagName === 'IMG') {
+      if (a.complete) bump();
+      else { a.addEventListener('load', bump, { once: true }); a.addEventListener('error', bump, { once: true }); }
+    } else {
+      if (a.readyState >= 2) bump();
+      else { a.addEventListener('loadeddata', bump, { once: true }); a.addEventListener('error', bump, { once: true }); }
+    }
+  });
+
+  const t0 = performance.now();
+  const MIN = reduced ? 0 : 900, MAX = 5200;
+  let shown = 0;
+
+  let closed = false;
+  const finish = () => {
+    if (closed) return;
+    closed = true;
+    clearTimeout(guard);
+    document.body.classList.add('loaded');
+    setTimeout(() => { const p = $('#pre'); if (p) p.remove(); }, 1500);
+  };
+  // rAF stoi w karcie w tle, a wtedy petla nizej nigdy nie dobije do konca —
+  // timer chodzi zawsze, wiec kurtyna zejdzie tak czy inaczej
+  const guard = setTimeout(finish, MAX + 1200);
+
+  const step = () => {
+    const el   = performance.now() - t0;
+    const real = done / total;
+    const time = clamp(el / MAX, 0, 1);
+    // pokazujemy mniejsza z wartosci, zeby pasek nie skakal do 100 przed czasem
+    const to   = Math.min(real, Math.max(time, real * 0.9));
+    shown += (to - shown) * 0.12;
+
+    const pct = Math.round(clamp(shown, 0, 1) * 100);
+    preBar.style.width = pct + '%';
+    preNum.textContent = pct;
+
+    if ((real >= 1 && el > MIN && pct > 96) || el > MAX) {
+      preBar.style.width = '100%';
+      preNum.textContent = '100';
+      setTimeout(finish, 260);
+      return;
+    }
+    requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+})();
+
 
 })();

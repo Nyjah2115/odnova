@@ -71,6 +71,21 @@ Animacje:
   `requestAnimationFrame`, co hero — przez zmienną CSS, żeby nie kasować skali z `:hover`,
 - kafelki unoszą się pod kursorem, przyciski przesuwają strzałkę, plus w FAQ obraca się w krzyżyk.
 
+Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyślana tak,
+żeby dobrze wyglądała na nagraniu ekranu:
+
+- **preloader** — znak firmowy, kreska dobijająca do 100% i licznik, a potem kurtyna
+  odsłaniająca hero od dołu; pasek czeka na klatki i klipy hero, ale nie dłużej niż
+  ~5 s, a niezależny `setTimeout` zdejmuje kurtynę nawet gdyby skrypt padł,
+- **własny kursor** — kropka z pierścieniem, `mix-blend-mode: difference`, pierścień
+  puchnie nad wszystkim klikalnym; włącza się tylko przy `pointer: fine`,
+- **pasek postępu strony** przy górnej krawędzi,
+- **taśma haseł** przewijana w kółko, zatrzymuje się pod kursorem,
+- **przypięta taśma realizacji** — sekcja wysoka na 340vh, pionowy scroll przekładany
+  na przesunięcie w bok, z licznikiem `01 / 08` i lightboxem (strzałki, Escape, zawijanie),
+- **magnetyczne przyciski** — lekko uciekają za kursorem,
+- **przesłona** zamiast fade na suwaku przed/po.
+
 Wszystko wyłącza się przy `prefers-reduced-motion`.
 
 ## Reszta strony
@@ -78,9 +93,17 @@ Wszystko wyłącza się przy `prefers-reduced-motion`.
 - **Liczby** — cztery kafelki z licznikami.
 - **Zakres prac** — sześć kart z ikonami i listami konkretów.
 - **Proces** — pięć kroków z numerem w kółku i tygodniem, w którym się dzieją.
-- **Realizacje** — suwak przed/po (te same `k1` i `k5`, co w hero) plus trzy kadry z etapów.
+- **Realizacje** — suwak przed/po (te same `k1` i `k5`, co w hero), a pod nim przypięta
+  taśma ośmiu wnętrz przewijana w bok scrollem, z lightboxem po kliknięciu.
 - **Pakiety** — trzy karty cenowe, środkowa ciemna jako wyróżniona.
 - **Opinie** z inicjałami, **FAQ** (akordeon), **formularz wyceny** (waliduje się, ale nic nie wysyła).
+
+## Zdjęcia w realizacjach
+
+To **darmowe zdjęcia stockowe z Unsplash**, nie prace żadnej firmy — na stronie
+pokazowej nie mogą uchodzić za portfolio, więc jest o tym notka w stopce.
+Licencja Unsplash pozwala na użycie komercyjne i niekomercyjne bez pytania o zgodę.
+Pliki leżą w `media/realizacje/` przeskalowane do 1400 px.
 
 ## Struktura
 
@@ -90,6 +113,7 @@ css/style.css
 js/main.js
 media/frames/k1–k5.jpg     klatki kluczowe (JPEG na stronę)
 media/video/etap-1…4.mp4   cztery klipy po 5 s
+media/realizacje/r1–r8.jpg osiem zdjęć stockowych do taśmy realizacji
 ```
 
 ## Uwagi

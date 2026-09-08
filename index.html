@@ -12,9 +12,27 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=11">
+<link rel="stylesheet" href="css/style.css?v=15">
+<script>
+  // Ostatnia deska ratunku: gdyby main.js nie wystartowal, kurtyna preloadera
+  // i tak zejdzie, zamiast zostawic uzytkownika przed czarnym ekranem.
+  setTimeout(function(){ document.body && document.body.classList.add('loaded'); }, 7000);
+</script>
 </head>
 <body>
+
+<!-- ————————————————— PRELOADER ————————————————— -->
+<div class="pre" id="pre">
+  <div class="pre-in">
+    <div class="pre-mark">ODNOVA</div>
+    <div class="pre-line"><i id="preBar"></i></div>
+    <div class="pre-num"><span id="preNum">0</span>%</div>
+  </div>
+</div>
+
+<!-- ————————————————— KURSOR I PASEK POSTEPU ————————————————— -->
+<div class="cursor" id="cursor"><span class="cur-dot"></span><span class="cur-ring"></span></div>
+<div class="progress" id="progress"></div>
 
 <div class="grain"></div>
 
@@ -166,6 +184,14 @@
   </div>
 </section>
 
+<!-- ————————————————— TASMA HASEL ————————————————— -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-in">
+    <span>Remont pod klucz <i>◆</i> Kuchnie <i>◆</i> Łazienki <i>◆</i> Gładzie i malowanie <i>◆</i> Elektryka <i>◆</i> Hydraulika <i>◆</i> Podłogi <i>◆</i> Stolarka na wymiar <i>◆</i> </span>
+    <span>Remont pod klucz <i>◆</i> Kuchnie <i>◆</i> Łazienki <i>◆</i> Gładzie i malowanie <i>◆</i> Elektryka <i>◆</i> Hydraulika <i>◆</i> Podłogi <i>◆</i> Stolarka na wymiar <i>◆</i> </span>
+  </div>
+</div>
+
 <!-- ————————————————— PROCES ————————————————— -->
 <section>
   <div class="wrap">
@@ -216,7 +242,7 @@
       <p class="lead rise">Przeciągnij suwak w bok i porównaj stan, w jakim odebraliśmy mieszkanie, z tym, w jakim je oddaliśmy. Remont trwał 47 dni.</p>
     </div>
 
-    <div class="ba rise" id="ba">
+    <div class="ba rise wipe" id="ba">
       <img class="before" src="media/frames/k1.jpg" alt="Salon przed remontem — stan surowy">
       <img class="after" src="media/frames/k5.jpg" alt="Salon po remoncie — urządzone wnętrze">
       <div class="ba-handle" id="baHandle"><div class="ba-knob"></div></div>
@@ -224,10 +250,25 @@
       <span class="ba-tag r">Po</span>
     </div>
 
-    <div class="gal">
-      <figure class="rise"><img src="media/frames/k2.jpg" alt="Instalacje elektryczne i płyty gipsowo-kartonowe"><figcaption>Tydzień 2 — instalacje</figcaption></figure>
-      <figure class="rise"><img src="media/frames/k3.jpg" alt="Wygładzone i pomalowane ściany"><figcaption>Tydzień 4 — gładzie</figcaption></figure>
-      <figure class="rise"><img src="media/frames/k4.jpg" alt="Gotowe wnętrze przed wniesieniem mebli"><figcaption>Tydzień 6 — podłoga</figcaption></figure>
+  </div>
+
+  <!-- tasma realizacji: przewijana w bok scrollem -->
+  <div class="strip" id="strip">
+    <div class="strip-sticky">
+      <div class="strip-head">
+        <span class="eyebrow">Ostatnie metraże</span>
+        <span class="strip-count"><b id="stripNow">01</b> / 08</span>
+      </div>
+      <div class="strip-track" id="stripTrack">
+        <figure class="shot" data-i="0"><div class="shot-img"><img src="media/realizacje/r1.jpg" alt="Jasny salon w ciepłych beżach"></div><figcaption><b>Salon</b><span>32 m² · Rzeszów</span></figcaption></figure>
+        <figure class="shot" data-i="1"><div class="shot-img"><img src="media/realizacje/r2.jpg" alt="Kuchnia z grafitowymi frontami"></div><figcaption><b>Kuchnia</b><span>14 m² · Tyczyn</span></figcaption></figure>
+        <figure class="shot" data-i="2"><div class="shot-img"><img src="media/realizacje/r3.jpg" alt="Łazienka z wanną wolnostojącą"></div><figcaption><b>Łazienka</b><span>9 m² · Rzeszów</span></figcaption></figure>
+        <figure class="shot" data-i="3"><div class="shot-img"><img src="media/realizacje/r4.jpg" alt="Sypialnia na poddaszu"></div><figcaption><b>Sypialnia</b><span>18 m² · Boguchwała</span></figcaption></figure>
+        <figure class="shot" data-i="4"><div class="shot-img"><img src="media/realizacje/r5.jpg" alt="Salon połączony z jadalnią"></div><figcaption><b>Salon z jadalnią</b><span>41 m² · Rzeszów</span></figcaption></figure>
+        <figure class="shot" data-i="5"><div class="shot-img"><img src="media/realizacje/r6.jpg" alt="Kącik do pracy przy oknie"></div><figcaption><b>Gabinet</b><span>9 m² · Łańcut</span></figcaption></figure>
+        <figure class="shot" data-i="6"><div class="shot-img"><img src="media/realizacje/r7.jpg" alt="Łazienka wyłożona kamieniem"></div><figcaption><b>Łazienka gościnna</b><span>6 m² · Rzeszów</span></figcaption></figure>
+        <figure class="shot" data-i="7"><div class="shot-img"><img src="media/realizacje/r8.jpg" alt="Salon z kominkiem w domu jednorodzinnym"></div><figcaption><b>Dom jednorodzinny</b><span>140 m² · Tyczyn</span></figcaption></figure>
+      </div>
     </div>
   </div>
 </section>
@@ -403,7 +444,7 @@
   <div class="demo-note">
     <div>
       <b>Projekt pokazowy.</b>
-      <span>ODNOVA jest marką fikcyjną, stworzoną na potrzeby portfolio. Nazwa, dane teleadresowe, ceny, opinie i statystyki są wymyślone, a zdjęcia i wideo w sekcji głównej wygenerowałem w Higgsfield. Formularz nie wysyła żadnych danych — działa wyłącznie po stronie przeglądarki.</span>
+      <span>ODNOVA jest marką fikcyjną, stworzoną na potrzeby portfolio. Nazwa, dane teleadresowe, ceny, opinie i statystyki są wymyślone, a zdjęcia i wideo w sekcji głównej wygenerowałem w Higgsfield. Zdjęcia w sekcji realizacji to darmowe zdjęcia stockowe z Unsplash, a nie prace tej firmy. Formularz nie wysyła żadnych danych — działa wyłącznie po stronie przeglądarki.</span>
     </div>
   </div>
   <div class="foot-in">
@@ -412,6 +453,17 @@
   </div>
 </footer>
 
-<script src="js/main.js?v=11"></script>
+<!-- ————————————————— LIGHTBOX ————————————————— -->
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Powiększone zdjęcie realizacji">
+  <button class="lb-x" id="lbX" aria-label="Zamknij"><span></span><span></span></button>
+  <button class="lb-nav prev" id="lbPrev" aria-label="Poprzednie">&#8249;</button>
+  <button class="lb-nav next" id="lbNext" aria-label="Następne">&#8250;</button>
+  <figure class="lb-fig">
+    <img id="lbImg" src="" alt="">
+    <figcaption><b id="lbTitle"></b><span id="lbMeta"></span></figcaption>
+  </figure>
+</div>
+
+<script src="js/main.js?v=15"></script>
 </body>
 </html>
