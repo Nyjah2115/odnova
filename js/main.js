@@ -198,29 +198,6 @@ $$('.faq-i').forEach(item => {
   });
 });
 
-/* ————————————————— SUWAK PRZED / PO ————————————————— */
-const ba = $('#ba');
-if (ba) {
-  const after = $('.after', ba), handle = $('#baHandle');
-  let dragging = false;
-  const set = x => {
-    const r = ba.getBoundingClientRect();
-    const p = clamp((x - r.left) / r.width, 0, 1) * 100;
-    after.style.clipPath = `inset(0 0 0 ${p}%)`;
-    handle.style.left = p + '%';
-  };
-  const start = e => { dragging = true; set((e.touches ? e.touches[0] : e).clientX); };
-  const move  = e => { if (dragging) set((e.touches ? e.touches[0] : e).clientX); };
-  const end   = () => { dragging = false; };
-  ba.addEventListener('mousedown', start);
-  ba.addEventListener('touchstart', start, { passive: true });
-  addEventListener('mousemove', move);
-  addEventListener('touchmove', move, { passive: true });
-  addEventListener('mouseup', end);
-  addEventListener('touchend', end);
-  ba.addEventListener('mousemove', e => { if (!dragging) set(e.clientX); });
-}
-
 /* ————————————————— FORMULARZ (bez wysylki) ————————————————— */
 const form = $('#form');
 if (form) {
@@ -267,7 +244,7 @@ function measureStrips() {
   for (const s of strips) {
     const pad = parseFloat(getComputedStyle(s.track).paddingLeft) || 0;
     s.max = Math.max(0, s.track.scrollWidth - innerWidth + pad);
-    s.el.style.height = Math.round(innerHeight + s.max * 1.15) + 'px';
+    s.el.style.height = Math.round(innerHeight + s.max * 0.85) + 'px';
   }
   // Dopiero teraz pozycje — zmiana wysokosci przesuwa wszystko, co jest nizej.
   for (const s of strips) {

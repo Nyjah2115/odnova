@@ -99,17 +99,26 @@ Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyśl
 - **pasek postępu strony** przy górnej krawędzi,
 - **taśma haseł** przewijana w kółko, zatrzymuje się pod kursorem,
 - **kamera raz w dół, raz w prawo** — na stronie są dwa przypięte przejazdy w bok
-  (pokoje dzienne po realizacjach, kuchnie i łazienki za pakietami). Sekcja jest przypięta,
-  pionowy scroll przekładany na przesunięcie taśmy, a gdy zdjęcia się skończą, strona
-  puszcza i znowu jedzie w dół. Każdy przejazd kończy się panelem z odnośnikiem do wyceny.
-  Wysokość sekcji ustawia JS proporcjonalnie do długości przejazdu (`1.15 × droga`),
-  więc tempo jest takie samo niezależnie od liczby zdjęć i szerokości okna.
+  (pokoje dzienne po realizacjach, kuchnie i łazienki za pakietami). Kadr zajmuje
+  **86% szerokości i 78% wysokości ekranu**, a następne zdjęcie wystaje zza krawędzi,
+  więc kamera przesuwa się z kadru na kadr zamiast pokazywać rząd kafelków. Podpis siedzi
+  w środku kadru, żeby zdjęcie mogło wziąć całą wysokość. Gdy zdjęcia się skończą,
+  sticky puszcza i strona znowu jedzie w dół. Każdy przejazd kończy się panelem
+  z odnośnikiem do wyceny.
+  Wysokość sekcji ustawia JS proporcjonalnie do długości przejazdu (`0.85 × droga`),
+  więc taśma jedzie odrobinę szybciej niż scroll i tempo jest takie samo niezależnie
+  od liczby zdjęć i szerokości okna.
   Lightbox obejmuje wszystkie osiem zdjęć naraz, niezależnie od tego, z którego przejazdu
   pochodzą (strzałki, Escape, zawijanie),
 - **magnetyczne przyciski** — lekko uciekają za kursorem,
-- **przesłona** zamiast fade na suwaku przed/po.
 
 Wszystko wyłącza się przy `prefers-reduced-motion`.
+
+## Czego nie ma
+
+Był tu suwak przed/po, ale pokazywał `k1` i `k5` — dokładnie pierwszą i ostatnią klatkę
+hero. Ten sam salon wracał więc drugi raz, kilka ekranów po tym, jak widz obejrzał jego
+remont w dwudziestosekundowym ujęciu. Hero opowiada to lepiej, więc suwak wypadł.
 
 ## Reszta strony
 
@@ -118,8 +127,7 @@ Po hero strona wchodzi od razu w zakres prac — sekcja ze statystykami („240 
 
 - **Zakres prac** — sześć kart z ikonami i listami konkretów.
 - **Proces** — pięć kroków z numerem w kółku i tygodniem, w którym się dzieją.
-- **Realizacje** — suwak przed/po (te same `k1` i `k5`, co w hero), a pod nim przypięta
-  taśma ośmiu wnętrz przewijana w bok scrollem, z lightboxem po kliknięciu.
+- **Realizacje** — dwa przypięte przejazdy w bok, po cztery wnętrza każdy.
 - **Pakiety** — trzy karty cenowe, środkowa ciemna jako wyróżniona.
 - **Opinie** z inicjałami, **FAQ** (akordeon), **formularz wyceny** (waliduje się, ale nic nie wysyła).
 
