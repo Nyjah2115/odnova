@@ -123,7 +123,10 @@ const apply = force => {
 };
 
 /* --- petla rAF --- */
+let prevT = 0;
 const tick = t => {
+  const dt = prevT ? Math.min(50, t - prevT) : 16;
+  prevT = t;
   if (lenis) { try { lenis.raf(t); } catch (e) {} }
   target = clamp((scrollY - heroTop) / heroRange, 0, 1);
   smooth += (target - smooth) * (reduced ? 1 : 0.14);
@@ -131,7 +134,7 @@ const tick = t => {
   apply(false);
   // tasma i pasek postepu sa ozdoba — gdyby ktorakolwiek rzucila bledem,
   // nie moze zabic petli, ktora obsluguje przewijanie hero
-  try { strip(); scenesTick(); pageProgress(); } catch (e) {}
+  try { strip(); scenesTick(); marqueeTick(dt); pageProgress(); } catch (e) {}
   requestAnimationFrame(tick);
 };
 requestAnimationFrame(tick);
@@ -154,18 +157,33 @@ $$('.svc, .proc, .plans, .revs, .faq, .sec-head, .contact-grid').forEach(group =
 
 /* Naglowki sekcji wjezdzaja zza maski — tekst chowamy w dodatkowym <i>,
    ktory startuje przesuniety o wlasna wysokosc w dol. */
+const maska = (tekst, idx) => {
+  const inner = document.createElement('i');
+  inner.textContent = tekst;
+  inner.style.setProperty('--w', idx);
+  const mask = document.createElement('span');
+  mask.className = 'mask';
+  mask.appendChild(inner);
+  return mask;
+};
+
 $$('.sec-h2').forEach(h => {
   if (h.querySelector('.mask')) return;
   const words = h.textContent.trim().split(/\s+/);
+  // W scenach na pelnym ekranie naglowek wjezdza litera po literze — jest na to
+  // miejsce i czas. W zwyklych sekcjach wystarczy slowo po slowie.
+  const poLiterach = !!h.closest('.scene');
   h.textContent = '';
+  let n = 0;
   words.forEach((w, i) => {
-    const inner = document.createElement('i');
-    inner.textContent = w;
-    inner.style.setProperty('--w', i);
-    const mask = document.createElement('span');
-    mask.className = 'mask';
-    mask.appendChild(inner);
-    h.appendChild(mask);
+    if (poLiterach) {
+      const slowo = document.createElement('span');
+      slowo.className = 'w';
+      [...w].forEach(litera => slowo.appendChild(maska(litera, n++)));
+      h.appendChild(slowo);
+    } else {
+      h.appendChild(maska(w, n++));
+    }
     if (i < words.length - 1) h.appendChild(document.createTextNode(' '));
   });
 });
@@ -224,6 +242,31 @@ function pageProgress() {
   bar.style.width = (max > 0 ? clamp(scrollY / max, 0, 1) * 100 : 0).toFixed(2) + '%';
 }
 
+/* ————————————————— PASEK HASEL —————————————————
+   Jedzie sam z siebie, ale rozpedza sie od scrolla i przechyla w jego strone —
+   dzieki temu widac, ze reaguje, zamiast krecic sie w kolko obojetnie. */
+const marqIn = $('.marquee-in');
+let marqX = 0, marqW = 0, lastY = scrollY, vel = 0;
+
+function marqueeTick(dt) {
+  if (!marqIn || reduced) return;   // przy ograniczonych animacjach pasek stoi
+  if (!marqW) marqW = marqIn.scrollWidth / 2;
+  if (!marqW) return;
+
+  const dy = scrollY - lastY;
+  lastY = scrollY;
+  vel += (dy - vel) * 0.14;
+
+  const kier = vel < -1.5 ? -1 : 1;              // przy scrollu w gore zawraca
+  const tempo = 0.042 + Math.min(Math.abs(vel), 90) * 0.02;
+  marqX -= tempo * dt * kier;
+  if (marqX <= -marqW) marqX += marqW;
+  if (marqX > 0)       marqX -= marqW;
+
+  const skos = clamp(-vel * 0.07, -5, 5);
+  marqIn.style.transform = 'translate3d(' + marqX.toFixed(1) + 'px,0,0) skewX(' + skos.toFixed(2) + 'deg)';
+}
+
 /* ————————————————— KADRY W TLE —————————————————
    Zdjecie otwiera sie od srodka (clip-path) i jedzie leniwa paralaksa,
    gdy sekcja przechodzi przez ekran. Tekst wjezdza zwyklym mechanizmem .rise. */
@@ -249,6 +292,7 @@ const strips = $$('.strip').map(el => ({
   track: $('.strip-track', el),
   now:   $('.strip-count b', el),
   cards: $$('.shot, .shot-end', el),
+  frames: $$('.shot', el).map(f => ({ box: f, img: $('.shot-img', f) })),
   top: 0, range: 1, max: 0, x: 0, cur: -1
 }));
 
@@ -278,6 +322,13 @@ function strip() {
     const to = -p * s.max;
     s.x += (to - s.x) * (reduced ? 1 : 0.12);
     s.track.style.transform = 'translate3d(' + s.x.toFixed(1) + 'px,0,0)';
+
+    // przeslona schodzi z kadru, kiedy ten wjezdza w ekran od prawej
+    for (const f of s.frames) {
+      const r = f.box.getBoundingClientRect();
+      const wp = clamp((r.left - innerWidth * 0.12) / (innerWidth * 0.62), 0, 1);
+      f.img.style.setProperty('--wp', wp.toFixed(3));
+    }
 
     if (!s.now) continue;
     const n = s.cards.length - 1;                 // panel domykajacy sie nie liczy

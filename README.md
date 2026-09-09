@@ -97,7 +97,16 @@ Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyśl
 - **nagłówki wjeżdżają słowo po słowie** — każde słowo dostaje własną maskę i startuje
   55 ms po poprzednim (odpowiednik GSAP SplitText, którego używa ERA),
 - **pasek postępu strony** przy górnej krawędzi,
-- **taśma haseł** przewijana w kółko, zatrzymuje się pod kursorem,
+- **taśma haseł reaguje na scroll** — jedzie sama z siebie, ale rozpędza się od
+  przewijania, przechyla w jego stronę i zawraca, gdy scrollujesz w górę. Prowadzi ją JS,
+  bo animacja CSS nie wie nic o prędkości scrolla,
+- **sekcja wjeżdża na przypięty kadr** — sekcja pod każdą sceną jest podciągnięta
+  ujemnym marginesem na jej koniec (`-58vh`), więc zamiast po prostu nastąpić po zdjęciu,
+  wsuwa się na nie: z zaokrągloną górną krawędzią i cieniem rzuconym w górę,
+- **przesłona schodzi z kadru** — każde zdjęcie w przejeździe jest zasłonięte panelem,
+  który zjeżdża w miarę, jak kadr wjeżdża w ekran od prawej,
+- **nagłówki scen wjeżdżają literami** — w zwykłych sekcjach słowo po słowie (55 ms),
+  w scenach na pełnym ekranie litera po literze (24 ms), bo jest na to miejsce i czas,
 - **kadry w tle** — trzy pełnoekranowe sceny (za zakresem prac, za pakietami i przed
   kontaktem). Zdjęcie i tekst to rodzeństwo, ale oba są `sticky`, a drugie podciągnięte
   o `-100vh` — dzięki temu trzymają się razem bez dodatkowego opakowania. Kadr otwiera się

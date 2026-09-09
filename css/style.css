@@ -258,7 +258,15 @@ section{ position:relative; }
    ============================================================ */
 /* Media i tresc to rodzenstwo, ale oba sa sticky i drugie jest podciagniete
    o wysokosc ekranu — dzieki temu trzymaja sie razem bez dodatkowego opakowania. */
-.scene{ position:relative; height:185vh; background:#15120f; }
+/* Sekcja pod scena jest podciagnieta na jej koniec, wiec wjezdza na przypiete
+   zdjecie zamiast po prostu po nim nastepowac. */
+.scene{ position:relative; height:200vh; margin-bottom:-58vh; background:#15120f; z-index:0; }
+.after-scene{
+  position:relative; z-index:2; background:var(--bg);
+  border-radius:var(--r) var(--r) 0 0;
+  box-shadow:0 -26px 60px -26px rgba(21,18,15,.5);
+}
+.marquee.after-scene{ background:var(--bg-2); }
 .scene-media{
   position:sticky; top:0; height:100vh; overflow:hidden;
   clip-path:inset(var(--c,0vh) round var(--r));
@@ -319,6 +327,11 @@ section{ position:relative; }
 .shot-img img{
   width:100%; height:100%; object-fit:cover;
   transform:scale(1.04); transition:transform 1.4s var(--ease);
+}
+/* Przeslona schodzi z kadru w miare, jak ten wjezdza w ekran. */
+.shot-img::before{
+  content:''; position:absolute; inset:0; z-index:2; background:var(--sand-2);
+  transform:scaleX(var(--wp,0)); transform-origin:right center;
 }
 .shot-img::after{
   content:''; position:absolute; inset:0; opacity:1; transition:opacity .7s var(--ease);
@@ -535,14 +548,12 @@ body:not(.loaded) .hero-h1, body:not(.loaded) .hero-bar, body:not(.loaded) .nav{
   overflow:hidden; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
   background:var(--bg-2); padding:20px 0; white-space:nowrap;
 }
-.marquee-in{ display:inline-flex; animation:marq 42s linear infinite; }
+.marquee-in{ display:inline-flex; will-change:transform; }
 .marquee-in span{
   font-family:var(--f-disp); font-size:clamp(20px,2.6vw,34px); font-weight:300; color:var(--ink);
   padding-right:.4em; letter-spacing:-.02em;
 }
 .marquee-in i{ font-style:normal; color:var(--clay); font-size:.42em; vertical-align:middle; margin:0 .5em; }
-@keyframes marq{ to{ transform:translateX(-50%); } }
-.marquee:hover .marquee-in{ animation-play-state:paused; }
 
 /* ============================================================
    LIGHTBOX
@@ -594,6 +605,7 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
 /* naglowek animuje sie wylacznie maska — bez podwojnego ruchu z .rise */
 .sec-h2.rise{ opacity:1; transform:none; }
 /* Kazde slowo dostaje wlasna maske i wjezdza chwile po poprzednim. */
+.w{ display:inline-block; white-space:nowrap; }
 .mask{
   display:inline-block; vertical-align:top; overflow:hidden;
   padding:.06em 0 .14em; margin:-.06em 0 -.14em;
@@ -602,6 +614,10 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   display:block; font-style:inherit; transform:translateY(105%);
   transition:transform 1.05s var(--ease);
   transition-delay:calc(var(--w,0) * 55ms);
+}
+.scene .mask > i{
+  transition:transform .85s var(--ease);
+  transition-delay:calc(var(--w,0) * 24ms);
 }
 .in .mask > i, .mask.in > i{ transform:none; }
 
