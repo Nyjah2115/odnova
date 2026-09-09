@@ -296,6 +296,60 @@ section{ position:relative; }
 .scene.light .scene-in .eyebrow{ color:var(--ink-2); }
 
 /* ============================================================
+   KADR KROKOWY — jedno tlo, lista krokow, podpis zmienia sie ze scrollem
+   ============================================================ */
+.steps{ position:relative; height:340vh; margin-bottom:-58vh; background:#15120f; z-index:0; }
+.steps-sticky{ position:sticky; top:0; height:100vh; overflow:hidden; }
+.steps-media{ position:absolute; inset:0; }
+.steps-media img{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  opacity:0; transition:opacity .9s var(--ease);
+}
+.steps-media img.on{ opacity:1; }
+.steps-media::after{
+  content:''; position:absolute; inset:0;
+  background:
+    linear-gradient(to top, rgba(21,18,15,.8) 0%, rgba(21,18,15,.25) 38%, rgba(21,18,15,0) 62%),
+    linear-gradient(100deg, rgba(21,18,15,.7) 0%, rgba(21,18,15,.4) 46%, rgba(21,18,15,.24) 100%);
+}
+
+/* lista po prawej — aktywna pozycja sie rozjasnia */
+.steps-list{
+  position:absolute; top:clamp(104px,15vh,168px); right:var(--pad); z-index:3;
+  list-style:none; margin:0; padding:2px 0 2px 20px;
+  border-left:1px solid rgba(255,255,255,.22);
+}
+.steps-list li{
+  position:relative; font-family:var(--f-disp); font-weight:300; text-transform:uppercase;
+  font-size:clamp(16px,1.9vw,27px); line-height:1.55; letter-spacing:-.02em;
+  color:rgba(255,255,255,.32); transition:color .55s var(--ease);
+}
+.steps-list li::before{
+  content:''; position:absolute; left:-21px; top:50%; width:1px; height:0; background:#fff;
+  transform:translateY(-50%); transition:height .55s var(--ease);
+}
+.steps-list li.on{ color:#fff; }
+.steps-list li.on::before{ height:100%; }
+
+/* podpis w lewym dolnym rogu — kroki przenikaja */
+.steps-cap{
+  position:absolute; left:var(--pad); bottom:clamp(56px,9vh,112px); z-index:3;
+  width:min(44ch, calc(100% - var(--pad) * 2)); height:clamp(200px,26vh,250px); color:#fff;
+}
+.step-item{
+  position:absolute; left:0; right:0; bottom:0;
+  opacity:0; transform:translateY(20px); pointer-events:none;
+  transition:opacity .6s var(--ease), transform .6s var(--ease);
+}
+.step-item.on{ opacity:1; transform:none; pointer-events:auto; }
+.step-item .eyebrow{ color:rgba(255,255,255,.72); }
+.step-item h3{
+  font-family:var(--f-disp); font-weight:300; text-transform:uppercase;
+  font-size:clamp(27px,3.6vw,52px); line-height:.94; letter-spacing:-.03em; margin:14px 0 12px;
+}
+.step-item p{ color:rgba(255,255,255,.8); font-size:clamp(14px,1.1vw,16.5px); line-height:1.75; }
+
+/* ============================================================
    PRZEJAZDY W BOK — zdjecia przewijane scrollem
    ============================================================ */
 /* Wysokosc ustawia JS proporcjonalnie do dlugosci przejazdu.
@@ -601,6 +655,28 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
 }
 .rise.in{ opacity:1; transform:none; }
 
+/* Warianty wejscia — zeby cala strona nie powtarzala jednego gestu.
+   Kazdy jest opisany przez :not(.in), zeby .rise.in zawsze mial ostatnie slowo. */
+.rise.from-l:not(.in){ transform:translateX(-46px); }
+.rise.from-r:not(.in){ transform:translateX(46px); }
+
+.rise.tilt{ transform-origin:left bottom; }
+.rise.tilt:not(.in){ transform:rotate(1.6deg) translateY(26px); }
+
+.rise.wipe-up{
+  /* docelowo inset(0), a nie brak wartosci — przejscie do "none" nie jest animowane */
+  clip-path:inset(0 0 0 0);
+  transition:opacity .8s var(--ease), clip-path 1.15s var(--ease);
+  transition-delay:calc(var(--i,0) * 75ms);
+}
+.rise.wipe-up:not(.in){ transform:none; clip-path:inset(100% 0 0 0); }
+
+.rise.blur-in{
+  transition:opacity 1s var(--ease), filter 1.2s var(--ease);
+  transition-delay:calc(var(--i,0) * 75ms);
+}
+.rise.blur-in:not(.in){ transform:none; filter:blur(18px); }
+
 /* nagłówki wjeżdżają zza maski */
 /* naglowek animuje sie wylacznie maska — bez podwojnego ruchu z .rise */
 .sec-h2.rise{ opacity:1; transform:none; }
@@ -635,6 +711,9 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
 @media (max-width:760px){
   /* Kadry w tle: w pionie przeslona po skosie zle sie klada, wiec od dolu,
      a tekst siada przy dolnej krawedzi. */
+  .steps{ height:300vh; }
+  .steps-list{ top:auto; bottom:auto; right:var(--pad); top:clamp(88px,12vh,130px); }
+  .steps-cap{ height:clamp(210px,32vh,270px); }
   .scene{ height:170vh; }
   .scene-in{ justify-content:flex-end; padding-bottom:clamp(48px,9vh,96px); }
   .scene-in .sec-h2{ max-width:16ch; }

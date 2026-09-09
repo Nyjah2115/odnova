@@ -134,7 +134,7 @@ const tick = t => {
   apply(false);
   // tasma i pasek postepu sa ozdoba — gdyby ktorakolwiek rzucila bledem,
   // nie moze zabic petli, ktora obsluguje przewijanie hero
-  try { strip(); scenesTick(); marqueeTick(dt); pageProgress(); } catch (e) {}
+  try { strip(); scenesTick(); stepsTick(); marqueeTick(dt); pageProgress(); } catch (e) {}
   requestAnimationFrame(tick);
 };
 requestAnimationFrame(tick);
@@ -270,7 +270,7 @@ function marqueeTick(dt) {
 /* ————————————————— KADRY W TLE —————————————————
    Zdjecie otwiera sie od srodka (clip-path) i jedzie leniwa paralaksa,
    gdy sekcja przechodzi przez ekran. Tekst wjezdza zwyklym mechanizmem .rise. */
-const scenes = $$('.scene').map(el => ({ el, media: $('.scene-media', el), img: $('.scene-media img', el) }));
+const scenes = $$('.scene').map(el => ({ el, media: $('.scene-media', el), img: $('.scene-media img', el), inner: $('.scene-in', el) }));
 
 function scenesTick() {
   for (const s of scenes) {
@@ -280,6 +280,38 @@ function scenesTick() {
     const open = clamp(p / 0.28, 0, 1);
     s.media.style.setProperty('--c', ((1 - open) * 4.5).toFixed(2) + 'vh');
     s.img.style.setProperty('--py', ((p - 0.5) * -7).toFixed(2) + '%');
+
+    // Tekst odjezdza w gore, zanim wjedzie na niego kolejna sekcja — inaczej
+    // nadciagajacy pasek przecinalby naglowek w pol.
+    const wyjscie = clamp((p - 0.6) / 0.22, 0, 1);
+    s.inner.style.opacity   = (1 - wyjscie).toFixed(3);
+    s.inner.style.transform = 'translateY(' + (-wyjscie * 70).toFixed(1) + 'px)';
+  }
+}
+
+/* ————————————————— KADR KROKOWY —————————————————
+   Przypieta sekcja, w ktorej scroll przelacza kolejne kroki: zmienia sie zdjecie,
+   podswietla pozycja na liscie i przenika podpis. */
+const kroki = $$('.steps').map(el => ({
+  el,
+  imgs: $$('.steps-media img', el),
+  lis:  $$('.steps-list li', el),
+  caps: $$('.step-item', el),
+  cur: -1
+}));
+
+function stepsTick() {
+  for (const s of kroki) {
+    const r = s.el.getBoundingClientRect();
+    if (r.bottom < -100 || r.top > vh + 100) continue;
+    const p = clamp(-r.top / Math.max(1, s.el.offsetHeight - vh), 0, 1);
+    const n = s.imgs.length;
+    const idx = Math.min(n - 1, Math.floor(p * n * 0.9999));
+    if (idx === s.cur) continue;
+    s.cur = idx;
+    s.imgs.forEach((e, i) => e.classList.toggle('on', i === idx));
+    s.lis.forEach((e, i)  => e.classList.toggle('on', i === idx));
+    s.caps.forEach((e, i) => e.classList.toggle('on', i === idx));
   }
 }
 

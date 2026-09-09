@@ -102,17 +102,26 @@ Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyśl
   bo animacja CSS nie wie nic o prędkości scrolla,
 - **sekcja wjeżdża na przypięty kadr** — sekcja pod każdą sceną jest podciągnięta
   ujemnym marginesem na jej koniec (`-58vh`), więc zamiast po prostu nastąpić po zdjęciu,
-  wsuwa się na nie: z zaokrągloną górną krawędzią i cieniem rzuconym w górę,
+  wsuwa się na nie: z zaokrągloną górną krawędzią i cieniem rzuconym w górę. Tekst sceny
+  odjeżdża w górę i gaśnie, zanim panel na niego wjedzie — inaczej przecinałby nagłówek w pół,
 - **przesłona schodzi z kadru** — każde zdjęcie w przejeździe jest zasłonięte panelem,
   który zjeżdża w miarę, jak kadr wjeżdża w ekran od prawej,
 - **nagłówki scen wjeżdżają literami** — w zwykłych sekcjach słowo po słowie (55 ms),
   w scenach na pełnym ekranie litera po literze (24 ms), bo jest na to miejsce i czas,
-- **kadry w tle** — trzy pełnoekranowe sceny (za zakresem prac, za pakietami i przed
+- **kadr krokowy** — przypięta sekcja, w której scroll przełącza trzy kroki: zmienia się
+  zdjęcie, podświetla pozycja na liście po prawej (reszta zostaje przygaszona, przy aktywnej
+  wyjeżdża pionowa kreska) i przenika podpis w lewym dolnym rogu. Wzorowane na
+  [era-residence.com](https://www.era-residence.com), którą klient podesłał jako punkt odniesienia,
+- **kadry w tle** — dwie pełnoekranowe sceny (za zakresem prac, za pakietami i przed
   kontaktem). Zdjęcie i tekst to rodzeństwo, ale oba są `sticky`, a drugie podciągnięte
   o `-100vh` — dzięki temu trzymają się razem bez dodatkowego opakowania. Kadr otwiera się
   od środka (`clip-path` schodzi z 4,5vh do zera) i jedzie leniwą paralaksą, a tekst wjeżdża
   zwykłym mechanizmem masek. W pionie przesłona po skosie kładła się źle, więc poniżej
   760 px zmienia się na pionową, a tekst siada przy dolnej krawędzi,
+- **warianty wejść** — żeby cała strona nie powtarzała jednego gestu, każda sekcja
+  wchodzi inaczej: kafle usług odsłaniają się przesłoną od dołu (`clip-path`), kroki procesu
+  wjeżdżają z lewej, pakiety wyostrzają się z rozmycia, opinie prostują się z lekkiego
+  przechyłu, a pytania w FAQ wjeżdżają z prawej,
 - **kamera raz w dół, raz w prawo** — w realizacjach jest przypięty przejazd w bok.
   Kadr zajmuje
   **86% szerokości i 78% wysokości ekranu**, a następne zdjęcie wystaje zza krawędzi,
