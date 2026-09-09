@@ -136,7 +136,7 @@ const tick = t => {
 };
 requestAnimationFrame(tick);
 
-const remeasure = () => { measure(); measureStrip(); setNav(); };
+const remeasure = () => { measure(); measureStrips(); setNav(); };
 addEventListener('scroll', setNav, { passive: true });
 addEventListener('resize', remeasure);
 addEventListener('load', remeasure);
@@ -247,41 +247,58 @@ function pageProgress() {
   bar.style.width = (max > 0 ? clamp(scrollY / max, 0, 1) * 100 : 0).toFixed(2) + '%';
 }
 
-/* ————————————————— TASMA REALIZACJI —————————————————
-   Sekcja jest wysoka na kilka ekranow i przypieta; pionowy scroll po niej
-   przekladamy na przesuniecie tasmy w bok. */
-const stripEl    = $('#strip');
-const stripTrack = $('#stripTrack');
-const stripNow   = $('#stripNow');
-const shots      = $$('.shot');
-let stripTop = 0, stripRange = 1, stripMax = 0, stripX = 0, stripCur = -1;
+/* ————————————————— PRZEJAZDY W BOK —————————————————
+   Kamera idzie raz w dol, raz w prawo: sekcja jest przypieta, a pionowy scroll
+   po niej przekladamy na przesuniecie tasmy. Takich przejazdow jest kilka,
+   wiec kazdy trzyma wlasne pomiary. */
+const strips = $$('.strip').map(el => ({
+  el,
+  track: $('.strip-track', el),
+  now:   $('.strip-count b', el),
+  cards: $$('.shot, .shot-end', el),
+  top: 0, range: 1, max: 0, x: 0, cur: -1
+}));
 
-function measureStrip() {
-  if (!stripEl) return;
-  const r = stripEl.getBoundingClientRect();
-  stripTop   = r.top + scrollY;
-  stripRange = Math.max(1, stripEl.offsetHeight - innerHeight);
-  const pad  = parseFloat(getComputedStyle(stripTrack).paddingLeft) || 0;
-  stripMax   = Math.max(0, stripTrack.scrollWidth - innerWidth + pad);
+function measureStrips() {
+  if (!strips.length) return;
+  // Najpierw dlugosci przejazdow i wysokosci sekcji — wysokosc dobieramy do tego,
+  // ile jest do przejechania, zeby tempo bylo takie samo w kazdym przejezdzie
+  // niezaleznie od liczby zdjec.
+  for (const s of strips) {
+    const pad = parseFloat(getComputedStyle(s.track).paddingLeft) || 0;
+    s.max = Math.max(0, s.track.scrollWidth - innerWidth + pad);
+    s.el.style.height = Math.round(innerHeight + s.max * 1.15) + 'px';
+  }
+  // Dopiero teraz pozycje — zmiana wysokosci przesuwa wszystko, co jest nizej.
+  for (const s of strips) {
+    const r = s.el.getBoundingClientRect();
+    s.top   = r.top + scrollY;
+    s.range = Math.max(1, s.el.offsetHeight - innerHeight);
+  }
 }
-measureStrip();
+measureStrips();
 
 function strip() {
-  if (!stripEl || !stripMax) return;
-  const p  = clamp((scrollY - stripTop) / stripRange, 0, 1);
-  const to = -p * stripMax;
-  stripX  += (to - stripX) * (reduced ? 1 : 0.12);
-  stripTrack.style.transform = 'translate3d(' + stripX.toFixed(1) + 'px,0,0)';
+  for (const s of strips) {
+    if (!s.max) continue;
+    const p  = clamp((scrollY - s.top) / s.range, 0, 1);
+    const to = -p * s.max;
+    s.x += (to - s.x) * (reduced ? 1 : 0.12);
+    s.track.style.transform = 'translate3d(' + s.x.toFixed(1) + 'px,0,0)';
 
-  const idx = Math.min(shots.length - 1, Math.round(p * (shots.length - 1)));
-  if (idx !== stripCur) {
-    stripCur = idx;
-    stripNow.textContent = String(idx + 1).padStart(2, '0');
+    if (!s.now) continue;
+    const n = s.cards.length - 1;                 // panel domykajacy sie nie liczy
+    const idx = Math.min(n - 1, Math.max(0, Math.round(p * n)));
+    if (idx !== s.cur) {
+      s.cur = idx;
+      s.now.textContent = String(idx + 1).padStart(2, '0');
+    }
   }
 }
 
 /* ————————————————— LIGHTBOX ————————————————— */
 const lb = $('#lb'), lbImg = $('#lbImg'), lbTitle = $('#lbTitle'), lbMeta = $('#lbMeta');
+const shots = $$('.shot');
 let lbAt = 0;
 
 const lbShow = i => {

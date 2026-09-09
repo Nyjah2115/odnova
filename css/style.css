@@ -472,7 +472,9 @@ body:not(.loaded) .hero-h1, body:not(.loaded) .hero-bar, body:not(.loaded) .nav{
 /* ============================================================
    TASMA REALIZACJI — przewijana w bok scrollem
    ============================================================ */
-.strip{ position:relative; height:340vh; }
+/* Wysokosc ustawia JS proporcjonalnie do dlugosci przejazdu.
+   Ta wartosc to zapas, gdyby skrypt nie wystartowal. */
+.strip{ position:relative; height:300vh; }
 .strip-sticky{
   position:sticky; top:0; height:100vh; display:flex; flex-direction:column; justify-content:center;
   gap:clamp(20px,3vh,34px); overflow:hidden;
@@ -484,10 +486,12 @@ body:not(.loaded) .hero-h1, body:not(.loaded) .hero-bar, body:not(.loaded) .nav{
 .strip-count{ font-family:var(--f-mono); font-size:11.5px; color:var(--muted); letter-spacing:.14em; font-variant-numeric:tabular-nums; }
 .strip-count b{ color:var(--ink); font-weight:500; }
 
-.strip-track{ display:flex; gap:clamp(14px,1.6vw,24px); padding-left:var(--pad); will-change:transform; }
+.strip-track{ display:flex; align-items:stretch; gap:clamp(14px,1.6vw,24px); padding:0 var(--pad); will-change:transform; }
 .shot{
-  margin:0; flex:0 0 auto; width:clamp(230px,25vw,340px);
-  display:grid; gap:14px; cursor:pointer;
+  /* szerokosc ograniczona takze wysokoscia okna, zeby kadr 3:4 nigdy
+     nie wyszedl poza przypiety ekran */
+  margin:0; flex:0 0 auto; width:min(clamp(240px,30vw,420px), 46vh);
+  display:grid; gap:14px; align-content:start; cursor:pointer;
 }
 .shot-img{
   position:relative; overflow:hidden; border-radius:var(--r); aspect-ratio:3/4;
@@ -508,6 +512,19 @@ body:not(.loaded) .hero-h1, body:not(.loaded) .hero-bar, body:not(.loaded) .nav{
 .shot figcaption{ display:flex; align-items:baseline; justify-content:space-between; gap:14px; padding:0 4px; }
 .shot figcaption b{ font-family:var(--f-disp); font-size:clamp(16px,1.5vw,20px); font-weight:300; }
 .shot figcaption span{ font-family:var(--f-mono); font-size:11px; color:var(--muted); white-space:nowrap; }
+
+/* panel domykajacy przejazd */
+.shot-end{
+  flex:0 0 auto; width:min(clamp(220px,24vw,320px), 36vh); align-self:stretch;
+  display:flex; flex-direction:column; justify-content:flex-end; gap:10px;
+  padding:30px 28px; border-radius:var(--r); background:var(--sand-2);
+  border:1px solid var(--line); transition:background .5s var(--ease), transform .6s var(--ease);
+}
+.shot-end:hover{ background:var(--sand); transform:translateY(-6px); }
+.shot-end b{ font-family:var(--f-disp); font-size:clamp(22px,2.4vw,32px); font-weight:300; letter-spacing:-.02em; }
+.shot-end span{ font-family:var(--f-mono); font-size:11px; color:var(--muted); letter-spacing:.04em; }
+.shot-end i{ font-style:normal; font-size:26px; color:var(--clay); margin-top:8px; transition:transform .5s var(--ease); }
+.shot-end:hover i{ transform:translateX(6px); }
 
 /* ============================================================
    LIGHTBOX
@@ -598,8 +615,8 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   .faq-i{ padding:0 24px; }
   .scroll-hint{ display:none; }
   .tile:hover{ transform:none; }
-  .strip{ height:300vh; }
-  .shot{ width:min(72vw,300px); }
+  .shot{ width:min(74vw,320px); }
+  .shot-end{ width:min(62vw,260px); padding:24px 22px; }
   .lb-nav{ width:44px; height:44px; font-size:22px; }
   .lb-fig img{ max-height:66vh; }
   .marquee{ padding:15px 0; }

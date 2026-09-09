@@ -98,8 +98,14 @@ Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyśl
   55 ms po poprzednim (odpowiednik GSAP SplitText, którego używa ERA),
 - **pasek postępu strony** przy górnej krawędzi,
 - **taśma haseł** przewijana w kółko, zatrzymuje się pod kursorem,
-- **przypięta taśma realizacji** — sekcja wysoka na 340vh, pionowy scroll przekładany
-  na przesunięcie w bok, z licznikiem `01 / 08` i lightboxem (strzałki, Escape, zawijanie),
+- **kamera raz w dół, raz w prawo** — na stronie są dwa przypięte przejazdy w bok
+  (pokoje dzienne po realizacjach, kuchnie i łazienki za pakietami). Sekcja jest przypięta,
+  pionowy scroll przekładany na przesunięcie taśmy, a gdy zdjęcia się skończą, strona
+  puszcza i znowu jedzie w dół. Każdy przejazd kończy się panelem z odnośnikiem do wyceny.
+  Wysokość sekcji ustawia JS proporcjonalnie do długości przejazdu (`1.15 × droga`),
+  więc tempo jest takie samo niezależnie od liczby zdjęć i szerokości okna.
+  Lightbox obejmuje wszystkie osiem zdjęć naraz, niezależnie od tego, z którego przejazdu
+  pochodzą (strzałki, Escape, zawijanie),
 - **magnetyczne przyciski** — lekko uciekają za kursorem,
 - **przesłona** zamiast fade na suwaku przed/po.
 
