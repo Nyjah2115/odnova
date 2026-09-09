@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Znak: kwadrat przeciety po skosie. Lewa polowa to stan surowy,
+       prawa gotowe wnetrze — ta sama historia, co w hero. -->
+  <rect width="64" height="64" rx="6" fill="#1b1815"/>
+  <path d="M14 50 L14 14 L50 14 Z" fill="#6f665e"/>
+  <path d="M50 14 L50 50 L14 50 Z" fill="#c98b62"/>
+</svg>

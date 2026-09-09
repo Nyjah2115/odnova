@@ -64,9 +64,24 @@ Animacje:
 
 - kafelki wjeżdżają od dołu, a kolejne w tej samej siatce startują 75 ms po sobie
   (JS ustawia `--i`, CSS przelicza to na `transition-delay`),
-- nagłówki sekcji wyjeżdżają zza maski — JS pakuje tekst w dodatkowy `<i>`,
-  który startuje przesunięty o własną wysokość,
 - kafelki unoszą się pod kursorem, przyciski przesuwają strzałkę, plus w FAQ obraca się w krzyżyk.
+
+Typografia idzie za dwiema stronami, które klient podesłał jako punkt odniesienia —
+[filmbot.com](https://filmbot.com) i [era-residence.com](https://www.era-residence.com).
+Obie robią to samo: **wielkie nagłówki wersalikami przy interlinii poniżej 0,9**
+i całą drobnicę na monospace. Tutaj nagłówki sekcji są w Fraunces wersalikami,
+`clamp(34px, 6.4vw, 94px)`, interlinia `.9`, światło `-.024em`, a etykiety, podpisy,
+metki i numery — w IBM Plex Mono.
+
+Ważniejsze od samej skali okazało się jednak **skrócenie nagłówków**. Przy 94 px
+zdanie „Robimy całość albo dokładnie ten kawałek, którego potrzebujesz" robi się ścianą
+na pięć linii. Referencje mają nagłówki dwuwyrazowe — i dopiero wtedy wielka skala
+działa. Stąd „Całość albo kawałek", „Pięć kroków", „Częste pytania", a wyrzucona treść
+przeniosła się do akapitów obok.
+
+Promienie zeszły z 26 px na 8, cienie spłaszczyły się, pigułki zrobiły się prostokątne.
+Doszła też jedna scena z jedną wielką liczbą — „47 DNI" — bo obie referencje trzymają
+pojedynczy fakt na osobnym ekranie zamiast rządka kafelków.
 
 Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyślana tak,
 żeby dobrze wyglądała na nagraniu ekranu:
@@ -74,6 +89,13 @@ Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyśl
 - **preloader** — znak firmowy, kreska dobijająca do 100% i licznik, a potem kurtyna
   odsłaniająca hero od dołu; pasek czeka na klatki i klipy hero, ale nie dłużej niż
   ~5 s, a niezależny `setTimeout` zdejmuje kurtynę nawet gdyby skrypt padł,
+- **płynne przewijanie** na [Lenis](https://github.com/darkroomengineering/lenis) —
+  strona dojeżdża do pozycji zamiast do niej przeskakiwać; obie referencje robią to samo
+  i to jest największa różnica na nagraniu. Lenis jest pompowany z tej samej pętli
+  `requestAnimationFrame`, co hero, a gdyby biblioteka się nie wczytała, zostaje
+  natywne przewijanie,
+- **nagłówki wjeżdżają słowo po słowie** — każde słowo dostaje własną maskę i startuje
+  55 ms po poprzednim (odpowiednik GSAP SplitText, którego używa ERA),
 - **pasek postępu strony** przy górnej krawędzi,
 - **taśma haseł** przewijana w kółko, zatrzymuje się pod kursorem,
 - **przypięta taśma realizacji** — sekcja wysoka na 340vh, pionowy scroll przekładany

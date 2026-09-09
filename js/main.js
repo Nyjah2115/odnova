@@ -12,6 +12,16 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/* ————————————————— PLYNNE PRZEWIJANIE —————————————————
+   Lenis interpoluje pozycje scrolla. Bez tego na nagraniu widac kazdy zab
+   kolka myszy; z nim strona dojezdza do pozycji zamiast do niej przeskakiwac.
+   Gdyby biblioteka sie nie wczytala, zostaje natywne przewijanie. */
+let lenis = null;
+if (window.Lenis && !reduced) {
+  try { lenis = new Lenis({ duration: 1.15, wheelMultiplier: 0.9, touchMultiplier: 1.6 }); }
+  catch (e) { lenis = null; }
+}
+
 /* ————————————————— NAV ————————————————— */
 const nav = $('#nav');
 
@@ -63,7 +73,7 @@ const ready = v => new Promise(res => {
   v.addEventListener('error', fail, { once: true });
 });
 
-if (!reduced && innerWidth >= 760) {
+if (!reduced) {
   Promise.all(vids.map(ready)).then(res => {
     if (!res.every(Boolean)) return;          // brak plikow -> zostajemy na klatkach
     videoMode = true;
@@ -113,7 +123,8 @@ const apply = force => {
 };
 
 /* --- petla rAF --- */
-const tick = () => {
+const tick = t => {
+  if (lenis) { try { lenis.raf(t); } catch (e) {} }
   target = clamp((scrollY - heroTop) / heroRange, 0, 1);
   smooth += (target - smooth) * (reduced ? 1 : 0.14);
   if (Math.abs(target - smooth) < 0.0004) smooth = target;
@@ -145,19 +156,37 @@ $$('.svc, .proc, .plans, .revs, .faq, .sec-head, .contact-grid').forEach(group =
    ktory startuje przesuniety o wlasna wysokosc w dol. */
 $$('.sec-h2').forEach(h => {
   if (h.querySelector('.mask')) return;
-  const inner = document.createElement('i');
-  inner.textContent = h.textContent;
-  const mask = document.createElement('span');
-  mask.className = 'mask';
-  mask.appendChild(inner);
+  const words = h.textContent.trim().split(/\s+/);
   h.textContent = '';
-  h.appendChild(mask);
+  words.forEach((w, i) => {
+    const inner = document.createElement('i');
+    inner.textContent = w;
+    inner.style.setProperty('--w', i);
+    const mask = document.createElement('span');
+    mask.className = 'mask';
+    mask.appendChild(inner);
+    h.appendChild(mask);
+    if (i < words.length - 1) h.appendChild(document.createTextNode(' '));
+  });
 });
 
 const io = new IntersectionObserver(es => {
   es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
 }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
 $$('.rise').forEach(el => io.observe(el));
+
+/* ————————————————— KOTWICE ————————————————— */
+$$('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href');
+    if (id === '#') return;
+    const el = $(id);
+    if (!el) return;
+    e.preventDefault();
+    if (lenis) lenis.scrollTo(el, { duration: 1.4 });
+    else el.scrollIntoView({ behavior: 'smooth' });
+  });
+});
 
 /* ————————————————— FAQ ————————————————— */
 $$('.faq-i').forEach(item => {
@@ -315,11 +344,13 @@ if (matchMedia('(pointer:fine)').matches && !reduced) {
   const MIN = reduced ? 0 : 900, MAX = 5200;
   let shown = 0;
 
+  if (lenis) lenis.stop();
   let closed = false;
   const finish = () => {
     if (closed) return;
     closed = true;
     clearTimeout(guard);
+    if (lenis) lenis.start();
     document.body.classList.add('loaded');
     setTimeout(() => { const p = $('#pre'); if (p) p.remove(); }, 1500);
   };
