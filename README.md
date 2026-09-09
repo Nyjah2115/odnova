@@ -98,8 +98,8 @@ Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyśl
   55 ms po poprzednim (odpowiednik GSAP SplitText, którego używa ERA),
 - **pasek postępu strony** przy górnej krawędzi,
 - **taśma haseł** przewijana w kółko, zatrzymuje się pod kursorem,
-- **kamera raz w dół, raz w prawo** — na stronie są dwa przypięte przejazdy w bok
-  (pokoje dzienne po realizacjach, kuchnie i łazienki za pakietami). Kadr zajmuje
+- **kamera raz w dół, raz w prawo** — w realizacjach jest przypięty przejazd w bok.
+  Kadr zajmuje
   **86% szerokości i 78% wysokości ekranu**, a następne zdjęcie wystaje zza krawędzi,
   więc kamera przesuwa się z kadru na kadr zamiast pokazywać rząd kafelków. Podpis siedzi
   w środku kadru, żeby zdjęcie mogło wziąć całą wysokość. Gdy zdjęcia się skończą,
@@ -108,8 +108,8 @@ Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyśl
   Wysokość sekcji ustawia JS proporcjonalnie do długości przejazdu (`0.85 × droga`),
   więc taśma jedzie odrobinę szybciej niż scroll i tempo jest takie samo niezależnie
   od liczby zdjęć i szerokości okna.
-  Lightbox obejmuje wszystkie osiem zdjęć naraz, niezależnie od tego, z którego przejazdu
-  pochodzą (strzałki, Escape, zawijanie),
+  Obsługa jest napisana na listę przejazdów, więc kolejne można dołożyć bez zmian w kodzie.
+  Zdjęcia otwierają się w lightboksie (strzałki, Escape, zawijanie),
 - **magnetyczne przyciski** — lekko uciekają za kursorem,
 
 Wszystko wyłącza się przy `prefers-reduced-motion`.
@@ -127,7 +127,7 @@ Po hero strona wchodzi od razu w zakres prac — sekcja ze statystykami („240 
 
 - **Zakres prac** — sześć kart z ikonami i listami konkretów.
 - **Proces** — pięć kroków z numerem w kółku i tygodniem, w którym się dzieją.
-- **Realizacje** — dwa przypięte przejazdy w bok, po cztery wnętrza każdy.
+- **Realizacje** — przypięty przejazd w bok przez cztery wnętrza.
 - **Pakiety** — trzy karty cenowe, środkowa ciemna jako wyróżniona.
 - **Opinie** z inicjałami, **FAQ** (akordeon), **formularz wyceny** (waliduje się, ale nic nie wysyła).
 
@@ -146,7 +146,7 @@ css/style.css
 js/main.js
 media/frames/k1–k5.jpg     klatki kluczowe (JPEG na stronę)
 media/video/etap-1…4.mp4   cztery klipy po 5 s
-media/realizacje/r1–r8.jpg osiem zdjęć stockowych do taśmy realizacji
+media/realizacje/r1,r4,r5,r8.jpg   zdjęcia stockowe do przejazdu
 ```
 
 ## Uwagi
