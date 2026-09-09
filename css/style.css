@@ -254,6 +254,40 @@ section{ position:relative; }
 
 /* ---------- realizacje ---------- */
 /* ============================================================
+   KADRY W TLE — zdjecie na caly ekran, tekst na wierzchu
+   ============================================================ */
+/* Media i tresc to rodzenstwo, ale oba sa sticky i drugie jest podciagniete
+   o wysokosc ekranu — dzieki temu trzymaja sie razem bez dodatkowego opakowania. */
+.scene{ position:relative; height:185vh; background:#15120f; }
+.scene-media{
+  position:sticky; top:0; height:100vh; overflow:hidden;
+  clip-path:inset(var(--c,0vh) round var(--r));
+}
+.scene-media img{
+  width:100%; height:116%; object-fit:cover;
+  transform:translateY(var(--py,0%));
+}
+.scene-media::after{
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(105deg, rgba(21,18,15,.78) 0%, rgba(21,18,15,.42) 42%, rgba(21,18,15,.12) 72%);
+}
+.scene.light .scene-media::after{
+  background:linear-gradient(105deg, rgba(251,248,244,.96) 0%, rgba(251,248,244,.82) 38%, rgba(251,248,244,.3) 72%, rgba(251,248,244,0) 92%);
+}
+.scene-in{
+  position:sticky; top:0; height:100vh; margin:-100vh auto 0; z-index:2;
+  max-width:var(--maxw); padding:0 var(--pad);
+  display:flex; flex-direction:column; justify-content:center; gap:16px;
+  color:#fff;
+}
+.scene.light .scene-in{ color:var(--ink); }
+.scene-in .sec-h2{ max-width:13ch; }
+.scene-in .lead{ max-width:38ch; color:rgba(255,255,255,.82); }
+.scene.light .scene-in .lead{ color:var(--ink-2); }
+.scene-in .eyebrow{ color:rgba(255,255,255,.72); }
+.scene.light .scene-in .eyebrow{ color:var(--ink-2); }
+
+/* ============================================================
    PRZEJAZDY W BOK — zdjecia przewijane scrollem
    ============================================================ */
 /* Wysokosc ustawia JS proporcjonalnie do dlugosci przejazdu.
@@ -583,6 +617,19 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   .proc-row p{ grid-column:2; }
 }
 @media (max-width:760px){
+  /* Kadry w tle: w pionie przeslona po skosie zle sie klada, wiec od dolu,
+     a tekst siada przy dolnej krawedzi. */
+  .scene{ height:170vh; }
+  .scene-in{ justify-content:flex-end; padding-bottom:clamp(48px,9vh,96px); }
+  .scene-in .sec-h2{ max-width:16ch; }
+  /* w pionie kadr kroi sie na srodku i wychodzi sam sufit — schodzimy nizej */
+  .scene-media img{ object-position:50% 64%; }
+  .scene-media::after{
+    background:linear-gradient(to top, rgba(21,18,15,.9) 0%, rgba(21,18,15,.5) 52%, rgba(21,18,15,.12) 100%);
+  }
+  .scene.light .scene-media::after{
+    background:linear-gradient(to top, rgba(251,248,244,.96) 0%, rgba(251,248,244,.62) 52%, rgba(251,248,244,.08) 100%);
+  }
   .nav-links{ display:none; }
   .burger{ display:block; }
   .hero{ height:420vh; }

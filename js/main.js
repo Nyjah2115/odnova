@@ -131,7 +131,7 @@ const tick = t => {
   apply(false);
   // tasma i pasek postepu sa ozdoba — gdyby ktorakolwiek rzucila bledem,
   // nie moze zabic petli, ktora obsluguje przewijanie hero
-  try { strip(); pageProgress(); } catch (e) {}
+  try { strip(); scenesTick(); pageProgress(); } catch (e) {}
   requestAnimationFrame(tick);
 };
 requestAnimationFrame(tick);
@@ -222,6 +222,22 @@ const bar = $('#progress');
 function pageProgress() {
   const max = document.documentElement.scrollHeight - innerHeight;
   bar.style.width = (max > 0 ? clamp(scrollY / max, 0, 1) * 100 : 0).toFixed(2) + '%';
+}
+
+/* ————————————————— KADRY W TLE —————————————————
+   Zdjecie otwiera sie od srodka (clip-path) i jedzie leniwa paralaksa,
+   gdy sekcja przechodzi przez ekran. Tekst wjezdza zwyklym mechanizmem .rise. */
+const scenes = $$('.scene').map(el => ({ el, media: $('.scene-media', el), img: $('.scene-media img', el) }));
+
+function scenesTick() {
+  for (const s of scenes) {
+    const r = s.el.getBoundingClientRect();
+    if (r.bottom < -100 || r.top > vh + 100) continue;
+    const p    = clamp(-r.top / Math.max(1, s.el.offsetHeight - vh), 0, 1);
+    const open = clamp(p / 0.28, 0, 1);
+    s.media.style.setProperty('--c', ((1 - open) * 4.5).toFixed(2) + 'vh');
+    s.img.style.setProperty('--py', ((p - 0.5) * -7).toFixed(2) + '%');
+  }
 }
 
 /* ————————————————— PRZEJAZDY W BOK —————————————————

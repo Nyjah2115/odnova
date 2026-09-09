@@ -98,6 +98,12 @@ Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyśl
   55 ms po poprzednim (odpowiednik GSAP SplitText, którego używa ERA),
 - **pasek postępu strony** przy górnej krawędzi,
 - **taśma haseł** przewijana w kółko, zatrzymuje się pod kursorem,
+- **kadry w tle** — trzy pełnoekranowe sceny (za zakresem prac, za pakietami i przed
+  kontaktem). Zdjęcie i tekst to rodzeństwo, ale oba są `sticky`, a drugie podciągnięte
+  o `-100vh` — dzięki temu trzymają się razem bez dodatkowego opakowania. Kadr otwiera się
+  od środka (`clip-path` schodzi z 4,5vh do zera) i jedzie leniwą paralaksą, a tekst wjeżdża
+  zwykłym mechanizmem masek. W pionie przesłona po skosie kładła się źle, więc poniżej
+  760 px zmienia się na pionową, a tekst siada przy dolnej krawędzi,
 - **kamera raz w dół, raz w prawo** — w realizacjach jest przypięty przejazd w bok.
   Kadr zajmuje
   **86% szerokości i 78% wysokości ekranu**, a następne zdjęcie wystaje zza krawędzi,
@@ -127,7 +133,7 @@ Po hero strona wchodzi od razu w zakres prac — sekcja ze statystykami („240 
 
 - **Zakres prac** — sześć kart z ikonami i listami konkretów.
 - **Proces** — pięć kroków z numerem w kółku i tygodniem, w którym się dzieją.
-- **Realizacje** — przypięty przejazd w bok przez cztery wnętrza.
+- **Realizacje** — przypięty przejazd w bok przez sześć wnętrz.
 - **Pakiety** — trzy karty cenowe, środkowa ciemna jako wyróżniona.
 - **Opinie** z inicjałami, **FAQ** (akordeon), **formularz wyceny** (waliduje się, ale nic nie wysyła).
 
@@ -146,7 +152,8 @@ css/style.css
 js/main.js
 media/frames/k1–k5.jpg     klatki kluczowe (JPEG na stronę)
 media/video/etap-1…4.mp4   cztery klipy po 5 s
-media/realizacje/r1,r4,r5,r8.jpg   zdjęcia stockowe do przejazdu
+media/realizacje/r*.jpg    sześć zdjęć stockowych do przejazdu
+media/realizacje/bg1–3.jpg trzy kadry na pełny ekran
 ```
 
 ## Uwagi
