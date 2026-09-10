@@ -720,10 +720,14 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   transition:transform 1.05s var(--ease);
   transition-delay:calc(var(--w,0) * 55ms);
 }
+/* W scenach litery nie wjezdzaja same z siebie po wejsciu sekcji w kadr —
+   odslania je scroll, litera po literze (patrz scenesTick). */
 .scene .mask > i{
-  transition:transform .85s var(--ease);
-  transition-delay:calc(var(--w,0) * 24ms);
+  transition:transform .5s var(--ease);
+  transition-delay:0s;
 }
+.scene .in .mask > i{ transform:translateY(105%); }
+.scene .mask > i.lit{ transform:none; }
 .in .mask > i, .mask.in > i{ transform:none; }
 
 /* ============================================================

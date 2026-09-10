@@ -273,7 +273,9 @@ function marqueeTick(dt) {
 const scenes = $$('.scene').map(el => ({
   el, media: $('.scene-media', el), img: $('.scene-media img', el),
   inner: $('.scene-in', el), next: el.nextElementSibling, capBottom: 0,
-  wBok: el.classList.contains('drift-x')
+  wBok: el.classList.contains('drift-x'),
+  litery: $$('.sec-h2 .mask > i', el),
+  odslon: -1
 }));
 
 /* Gdzie konczy sie tekst w przypietym ekranie. Mierzymy bez transformu, bo ten
@@ -297,6 +299,18 @@ function scenesTick() {
     const p    = clamp(-r.top / Math.max(1, s.el.offsetHeight - vh), 0, 1);
     if (s.wBok) s.img.style.setProperty('--px', ((p - 0.5) * -6).toFixed(2) + '%');
     else        s.img.style.setProperty('--py', ((p - 0.5) * -7).toFixed(2) + '%');
+
+    // Naglowek odslania sie litera po literze w miare przewijania, a nie caly naraz
+    // po wejsciu w kadr — tak robi to ERA i tak wyglada to duzo lepiej na nagraniu.
+    if (s.litery.length) {
+      const ile = Math.round(clamp((p - 0.04) / 0.34, 0, 1) * s.litery.length);
+      if (ile !== s.odslon) {
+        const od = Math.min(s.odslon < 0 ? 0 : s.odslon, ile);
+        const do_ = Math.max(s.odslon, ile);
+        for (let i = od; i < do_; i++) s.litery[i].classList.toggle('lit', i < ile);
+        s.odslon = ile;
+      }
+    }
 
     // Tekst odjezdza w gore, ZANIM nadciagajaca sekcja dosiegnie jego dolnej
     // krawedzi. Prog liczymy z realnej pozycji panelu, a nie z postepu sekcji —
