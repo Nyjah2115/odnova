@@ -293,7 +293,7 @@ section{ position:relative; }
    (pasek hasel ma raptem kilkadziesiat pikseli). Wszystko, co moze w te zakladke wpasc,
    musi wiec kryc samo z siebie — inaczej zdjecie przebija spod spodu.
    Reguly z wlasnym tlem (kontakt, stopka, scena z liczba) sa nizej i wygrywaja. */
-body > section:not(.scene):not(.steps){
+body > section:not(.scene):not(.steps):not(.closer):not(.contact){
   position:relative; z-index:2; background:var(--bg);
 }
 .scene-media{
@@ -326,35 +326,28 @@ body > section:not(.scene):not(.steps){
 .scene.light .scene-in .eyebrow{ color:var(--ink-2); }
 
 /* ============================================================
-   ODSLONA — dwa okna na to samo zdjecie, ktore rozrastaja sie w pelny kadr
+   DOMKNIECIE — ciemny pas z jednym zdaniem, bez zdjecia
    ============================================================ */
-/* Na poczatku widac dwa prostokaty na tle strony: lewy nizej, prawy wyzej, z przerwa
-   miedzy nimi. To dwie kopie tego samego zdjecia, kazda przycieta wlasnym clip-path.
-   Przewijanie rozsuwa przyciecia do zera — okna rosna, przerwa znika i zostaje jeden
-   kadr na cala szerokosc. Samo zdjecie ani na chwile nie zmienia rozmiaru. */
-.reveal{ position:relative; height:250vh; background:var(--bg); }
-.reveal-sticky{ position:sticky; top:0; height:100vh; overflow:hidden; }
-.reveal-media{ position:absolute; inset:0; }
-.win{
-  position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;
-}
-.w1{ clip-path:inset(var(--t1,26%) var(--r1,53%) var(--b1,12%) var(--l1,11%)); }
-.w2{ clip-path:inset(var(--t2,9%)  var(--r2,11%) var(--b2,28%) var(--l2,53%)); }
+.closer{ background:var(--ink); color:var(--bg); }
+.closer-in{ display:grid; gap:clamp(18px,2.6vh,32px); }
+.closer .eyebrow{ color:rgba(245,240,232,.6); }
+.closer .eyebrow::before{ background:var(--clay-2); opacity:1; }
+.closer .sec-h2{ max-width:13ch; font-size:clamp(40px,8.4vw,124px); }
+.closer .lead{ color:rgba(245,240,232,.72); max-width:44ch; }
 
-.reveal-txt{
-  position:absolute; z-index:2; left:0; right:0; top:0; height:100%;
-  max-width:var(--maxw); margin:0 auto; padding:clamp(96px,15vh,150px) var(--pad) 0;
-  display:flex; flex-direction:column; gap:14px; align-items:flex-start;
-  color:#fff; opacity:0; pointer-events:none;
+/* kreska rysuje sie od lewej */
+.rule{
+  display:block; height:1px; background:rgba(245,240,232,.22); transform-origin:left center;
+  margin-top:clamp(8px,1.4vh,20px);
 }
-/* przeslona wchodzi razem z tekstem — bez niej biel ginie na jasnym kadrze */
-.reveal-txt::before{
-  content:''; position:absolute; inset:0 0 auto 0; height:78%; z-index:-1; pointer-events:none;
-  background:linear-gradient(to bottom, rgba(21,18,15,.78) 0%, rgba(21,18,15,.42) 42%, rgba(21,18,15,0) 100%);
+.rise.draw{ transition:transform 1.1s var(--ease); }
+.rise.draw:not(.in){ opacity:1; transform:scaleX(0); }
+
+.closer-row{
+  display:flex; justify-content:space-between; align-items:flex-end;
+  gap:clamp(24px,4vw,64px); flex-wrap:wrap; margin-top:clamp(8px,1.5vh,18px);
 }
-.reveal-txt .sec-h2{ max-width:15ch; text-shadow:0 2px 40px rgba(21,18,15,.5); }
-.reveal-txt .lead{ max-width:34ch; color:rgba(255,255,255,.86); text-shadow:0 1px 22px rgba(21,18,15,.8); }
-.reveal-txt .eyebrow{ color:rgba(255,255,255,.78); }
+.closer .btn{ width:auto; padding-left:30px; padding-right:26px; }
 
 /* ============================================================
    KADR KROKOWY — jedno tlo, lista krokow, podpis zmienia sie ze scrollem
@@ -753,12 +746,12 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
 }
 /* Naglowek odslania sie dopiero, gdy okna zlaly sie w pelny kadr —
    litera po literze, sterowane scrollem (patrz revealTick). */
-.reveal .mask > i, .scene .mask > i{
+.closer .mask > i, .scene .mask > i{
   transition:transform .5s var(--ease);
   transition-delay:0s;
 }
-.reveal .in .mask > i, .scene .in .mask > i{ transform:translateY(132%); }
-.reveal .mask > i.lit, .scene .mask > i.lit{ transform:none; }
+.scene .in .mask > i{ transform:translateY(132%); }
+.scene .mask > i.lit{ transform:none; }
 .in .mask > i, .mask.in > i{ transform:none; }
 
 /* ============================================================
@@ -780,9 +773,6 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   .scene-media::after{
     background:linear-gradient(to top, rgba(21,18,15,.9) 0%, rgba(21,18,15,.5) 52%, rgba(21,18,15,.12) 100%);
   }
-  .reveal{ height:220vh; }
-  .reveal-txt{ padding-top:clamp(84px,12vh,120px); }
-  .reveal-txt .sec-h2{ max-width:none; }
   .steps{ height:300vh; }
   .steps-list{ top:auto; bottom:auto; right:var(--pad); top:clamp(88px,12vh,130px); }
   .steps-cap{ height:clamp(210px,32vh,270px); }

@@ -128,12 +128,10 @@ Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyśl
   [era-residence.com](https://www.era-residence.com), którą klient podesłał jako punkt odniesienia,
 - **kadr w tle z łukiem** (po zakresie prac) — pełnoekranowe zdjęcie przypięte na czas
   przewijania sekcji, po którym wjeżdża proces łukiem przez cały ekran,
-- **odsłona z dwóch okien** (przed kontaktem) — sekcja zaczyna się dwoma prostokątami:
-  to dwie kopie **tego samego zdjęcia**, każda przycięta własnym `clip-path`. Przewijanie
-  sprowadza przycięcia do zera — okna rosną, przerwa znika i zostaje jeden kadr na cały
-  ekran, a dopiero wtedy wchodzi nagłówek, litera po literze. Fotografia nie zmienia
-  rozmiaru ani na chwilę. Poniżej 760 px okna ustawiają się **jedno nad drugim**: obok
-  siebie schodziły do pasków po ~140 px i cały efekt się rozsypywał.
+- **ciemne domknięcie** — ostatnia sekcja przed kontaktem to pas w kolorze atramentu:
+  duży nagłówek wersalikami wjeżdżający literami, kreska rysująca się od lewej, jedno
+  zdanie i przycisk. Bez zdjęcia — świadomie, bo materiał stockowy w tym miejscu był
+  renderem 3D i to było widać.
 - **warianty wejść** — żeby cała strona nie powtarzała jednego gestu, każda sekcja
   wchodzi inaczej: kafle usług odsłaniają się przesłoną od dołu (`clip-path`), kroki procesu
   wjeżdżają z lewej, pakiety wyostrzają się z rozmycia, opinie prostują się z lekkiego
