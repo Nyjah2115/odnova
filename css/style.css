@@ -747,7 +747,7 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   padding:.06em 0 .14em; margin:-.06em 0 -.14em;
 }
 .mask > i{
-  display:block; font-style:inherit; transform:translateY(105%);
+  display:block; font-style:inherit; transform:translateY(132%);
   transition:transform 1.05s var(--ease);
   transition-delay:calc(var(--w,0) * 55ms);
 }
@@ -757,7 +757,7 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   transition:transform .5s var(--ease);
   transition-delay:0s;
 }
-.reveal .in .mask > i, .scene .in .mask > i{ transform:translateY(105%); }
+.reveal .in .mask > i, .scene .in .mask > i{ transform:translateY(132%); }
 .reveal .mask > i.lit, .scene .mask > i.lit{ transform:none; }
 .in .mask > i, .mask.in > i{ transform:none; }
 
