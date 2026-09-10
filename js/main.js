@@ -294,8 +294,6 @@ function scenesTick() {
     const r = s.el.getBoundingClientRect();
     if (r.bottom < -100 || r.top > vh + 100) continue;
     const p    = clamp(-r.top / Math.max(1, s.el.offsetHeight - vh), 0, 1);
-    const open = clamp(p / 0.28, 0, 1);
-    s.media.style.setProperty('--c', ((1 - open) * 4.5).toFixed(2) + 'vh');
     s.img.style.setProperty('--py', ((p - 0.5) * -7).toFixed(2) + '%');
 
     // Tekst odjezdza w gore, ZANIM nadciagajaca sekcja dosiegnie jego dolnej

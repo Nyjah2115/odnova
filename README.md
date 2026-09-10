@@ -123,8 +123,7 @@ Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyśl
   [era-residence.com](https://www.era-residence.com), którą klient podesłał jako punkt odniesienia,
 - **kadry w tle** — dwie pełnoekranowe sceny (za zakresem prac, za pakietami i przed
   kontaktem). Zdjęcie i tekst to rodzeństwo, ale oba są `sticky`, a drugie podciągnięte
-  o `-100vh` — dzięki temu trzymają się razem bez dodatkowego opakowania. Kadr otwiera się
-  od środka (`clip-path` schodzi z 4,5vh do zera) i jedzie leniwą paralaksą, a tekst wjeżdża
+  o `-100vh` — dzięki temu trzymają się razem bez dodatkowego opakowania. Kadr jedzie leniwą paralaksą (samo przesunięcie w pionie — bez skalowania), a tekst wjeżdża
   zwykłym mechanizmem masek. W pionie przesłona po skosie kładła się źle, więc poniżej
   760 px zmienia się na pionową, a tekst siada przy dolnej krawędzi,
 - **warianty wejść** — żeby cała strona nie powtarzała jednego gestu, każda sekcja
@@ -144,6 +143,10 @@ Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyśl
   Obsługa jest napisana na listę przejazdów, więc kolejne można dołożyć bez zmian w kodzie.
   Zdjęcia otwierają się w lightboksie (strzałki, Escape, zawijanie),
 - **magnetyczne przyciski** — lekko uciekają za kursorem,
+
+Czego tu **nie ma**: żadnego skalowania zdjęć. W całym arkuszu nie występuje `scale()` —
+kadry nie rozsuwają się przy wejściu, nie przybliżają pod kursorem, a lightbox wjeżdża
+od dołu zamiast się rozrastać.
 
 Wszystko wyłącza się przy `prefers-reduced-motion`.
 

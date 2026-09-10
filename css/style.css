@@ -278,7 +278,6 @@ body > section:not(.scene):not(.steps){
 }
 .scene-media{
   position:sticky; top:0; height:100vh; overflow:hidden;
-  clip-path:inset(var(--c,0vh) round var(--r));
 }
 .scene-media img{
   width:100%; height:116%; object-fit:cover;
@@ -389,7 +388,7 @@ body > section:not(.scene):not(.steps){
 }
 .shot-img img{
   width:100%; height:100%; object-fit:cover;
-  transform:scale(1.04); transition:transform 1.4s var(--ease);
+  transition:transform 1.4s var(--ease);
 }
 /* Przeslona schodzi z kadru w miare, jak ten wjezdza w ekran. */
 .shot-img::before{
@@ -400,8 +399,7 @@ body > section:not(.scene):not(.steps){
   content:''; position:absolute; inset:0; opacity:1; transition:opacity .7s var(--ease);
   background:linear-gradient(to top, rgba(21,18,15,.34) 0%, rgba(21,18,15,0) 38%);
 }
-.shot:hover .shot-img{ box-shadow:var(--sh-2); }
-.shot:hover .shot-img img{ transform:scale(1.08); }
+.shot:hover .shot-img{ box-shadow:var(--sh-2); transform:translateY(-6px); }
 
 /* podpis siedzi w kadrze, zeby zdjecie moglo wziac cala wysokosc */
 .shot figcaption{
@@ -630,7 +628,7 @@ body.lb-open .lb{ opacity:1; pointer-events:auto; }
 .lb-fig{ margin:0; display:grid; gap:16px; justify-items:center; max-height:100%; }
 .lb-fig img{
   max-height:76vh; width:auto; border-radius:var(--r-s); object-fit:contain;
-  transform:scale(.94); opacity:0; transition:transform .6s var(--ease), opacity .5s var(--ease);
+  transform:translateY(22px); opacity:0; transition:transform .6s var(--ease), opacity .5s var(--ease);
   box-shadow:0 40px 90px -40px rgba(0,0,0,.9);
 }
 body.lb-open .lb-fig img{ transform:none; opacity:1; }
