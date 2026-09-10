@@ -102,7 +102,10 @@ Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyśl
   bo animacja CSS nie wie nic o prędkości scrolla,
 - **sekcja wjeżdża na przypięty kadr** — sekcja pod każdą sceną jest podciągnięta
   ujemnym marginesem na jej koniec (`-58vh`), więc zamiast po prostu nastąpić po zdjęciu,
-  wsuwa się na nie: z zaokrągloną górną krawędzią i cieniem rzuconym w górę. Tekst sceny
+  wsuwa się na nie: z zaokrągloną górną krawędzią i cieniem rzuconym w górę.
+  Zakładka bywa wyższa niż pierwszy element, który po scenie jedzie (pasek haseł ma raptem
+  100 px), więc **każda zwykła sekcja ma własne kryjące tło i `z-index: 2`** — inaczej
+  przypięte zdjęcie przebija spod przezroczystej sekcji. Tekst sceny
   odjeżdża w górę i gaśnie, **zanim** panel dosięgnie jego dolnej krawędzi — próg liczony
   jest z rzeczywistej pozycji panelu i zmierzonej wysokości bloku tekstu, nie ze zgadywanego
   progu postępu. Pierwsze podejście używało progu „60% sekcji" i panel wjeżdżał w tekst,

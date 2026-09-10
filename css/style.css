@@ -267,6 +267,14 @@ section{ position:relative; }
   box-shadow:0 -26px 60px -26px rgba(21,18,15,.5);
 }
 .marquee.after-scene{ background:var(--bg-2); }
+
+/* Zakladka na przypiete zdjecie bywa wyzsza niz pierwszy element, ktory po nim jedzie
+   (pasek hasel ma raptem kilkadziesiat pikseli). Wszystko, co moze w te zakladke wpasc,
+   musi wiec kryc samo z siebie — inaczej zdjecie przebija spod spodu.
+   Reguly z wlasnym tlem (kontakt, stopka, scena z liczba) sa nizej i wygrywaja. */
+body > section:not(.scene):not(.steps){
+  position:relative; z-index:2; background:var(--bg);
+}
 .scene-media{
   position:sticky; top:0; height:100vh; overflow:hidden;
   clip-path:inset(var(--c,0vh) round var(--r));
