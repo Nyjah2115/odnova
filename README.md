@@ -117,8 +117,11 @@ Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyśl
   kiedy ten miał jeszcze 55% krycia. To samo dotyczy podpisu w kadrze krokowym,
 - **przesłona schodzi z kadru** — każde zdjęcie w przejeździe jest zasłonięte panelem,
   który zjeżdża w miarę, jak kadr wjeżdża w ekran od prawej,
-- **nagłówki scen wjeżdżają literami** — w zwykłych sekcjach słowo po słowie (55 ms),
-  w scenach na pełnym ekranie litera po literze (24 ms), bo jest na to miejsce i czas,
+- **nagłówki scen odsłania scroll, litera po literze** — nie wjeżdżają same z siebie po
+  wejściu sekcji w kadr, tylko przybywa ich w miarę przewijania: pierwsza litera przy 4%
+  postępu sekcji, ostatnia przy 38%. Tak robi to ERA i na nagraniu wygląda to znacznie
+  lepiej niż jednorazowe wejście, które przelatuje w sekundę. W zwykłych sekcjach zostaje
+  słowo po słowie (55 ms), bo tam nie ma na to tyle miejsca,
 - **kadr krokowy** — przypięta sekcja, w której scroll przełącza trzy kroki: zmienia się
   zdjęcie, podświetla pozycja na liście po prawej (reszta zostaje przygaszona, przy aktywnej
   wyjeżdża pionowa kreska) i przenika podpis w lewym dolnym rogu. Wzorowane na
