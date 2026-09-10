@@ -102,7 +102,10 @@ Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyśl
   bo animacja CSS nie wie nic o prędkości scrolla,
 - **sekcja wjeżdża na przypięty kadr** — sekcja pod każdą sceną jest podciągnięta
   ujemnym marginesem na jej koniec (`-58vh`), więc zamiast po prostu nastąpić po zdjęciu,
-  wsuwa się na nie: z zaokrągloną górną krawędzią i cieniem rzuconym w górę.
+  wsuwa się na nie **łukiem**: górna krawędź ma promień poziomy równy połowie szerokości
+  i pionowy rzędu 70 px, co daje kopułę przez cały ekran (tak samo robi to ERA).
+  Pasek haseł przeniósł się przed scenę, bo przy stu pikselach wysokości nie udźwignąłby łuku
+  — teraz wjeżdżają wysokie sekcje: proces, opinie i kontakt.
   Zakładka bywa wyższa niż pierwszy element, który po scenie jedzie (pasek haseł ma raptem
   100 px), więc **każda zwykła sekcja ma własne kryjące tło i `z-index: 2`** — inaczej
   przypięte zdjęcie przebija spod przezroczystej sekcji. Tekst sceny

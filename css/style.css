@@ -263,10 +263,11 @@ section{ position:relative; }
 .scene{ position:relative; height:200vh; margin-bottom:-58vh; background:#15120f; z-index:0; }
 .after-scene{
   position:relative; z-index:2; background:var(--bg);
-  border-radius:var(--r) var(--r) 0 0;
-  box-shadow:0 -26px 60px -26px rgba(21,18,15,.5);
+  /* Gorna krawedz to szeroki luk, a nie zaokraglone rogi: promien poziomy to polowa
+     szerokosci, pionowy kilkadziesiat pikseli — razem daje kopule przez caly ekran. */
+  border-radius:50% 50% 0 0 / clamp(56px,8vh,104px) clamp(56px,8vh,104px) 0 0;
+  box-shadow:0 -30px 70px -30px rgba(21,18,15,.55);
 }
-.marquee.after-scene{ background:var(--bg-2); }
 
 /* Zakladka na przypiete zdjecie bywa wyzsza niz pierwszy element, ktory po nim jedzie
    (pasek hasel ma raptem kilkadziesiat pikseli). Wszystko, co moze w te zakladke wpasc,
@@ -722,6 +723,7 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   .steps{ height:300vh; }
   .steps-list{ top:auto; bottom:auto; right:var(--pad); top:clamp(88px,12vh,130px); }
   .steps-cap{ height:clamp(210px,32vh,270px); }
+  .after-scene{ border-radius:50% 50% 0 0 / 42px 42px 0 0; }
   .scene{ height:170vh; }
   .scene-in{ justify-content:flex-end; padding-bottom:clamp(120px,22vh,220px); }
   .scene-in .sec-h2{ max-width:16ch; }
