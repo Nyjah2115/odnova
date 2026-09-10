@@ -139,7 +139,7 @@ const tick = t => {
 };
 requestAnimationFrame(tick);
 
-const remeasure = () => { measure(); measureStrips(); setNav(); };
+const remeasure = () => { measure(); measureStrips(); measureScenes(); measureSteps(); setNav(); };
 addEventListener('scroll', setNav, { passive: true });
 addEventListener('resize', remeasure);
 addEventListener('load', remeasure);
@@ -270,7 +270,24 @@ function marqueeTick(dt) {
 /* ————————————————— KADRY W TLE —————————————————
    Zdjecie otwiera sie od srodka (clip-path) i jedzie leniwa paralaksa,
    gdy sekcja przechodzi przez ekran. Tekst wjezdza zwyklym mechanizmem .rise. */
-const scenes = $$('.scene').map(el => ({ el, media: $('.scene-media', el), img: $('.scene-media img', el), inner: $('.scene-in', el) }));
+const scenes = $$('.scene').map(el => ({
+  el, media: $('.scene-media', el), img: $('.scene-media img', el),
+  inner: $('.scene-in', el), next: el.nextElementSibling, capBottom: 0
+}));
+
+/* Gdzie konczy sie tekst w przypietym ekranie. Mierzymy bez transformu, bo ten
+   jest ustawiany co klatke i zafalszowalby pomiar. */
+function measureScenes() {
+  for (const s of scenes) {
+    const bylo = s.inner.style.transform;
+    s.inner.style.transform = 'none';
+    const i0 = s.inner.getBoundingClientRect();
+    const last = s.inner.lastElementChild.getBoundingClientRect();
+    s.capBottom = Math.round(last.bottom - i0.top);
+    s.inner.style.transform = bylo;
+  }
+}
+measureScenes();
 
 function scenesTick() {
   for (const s of scenes) {
@@ -281,9 +298,17 @@ function scenesTick() {
     s.media.style.setProperty('--c', ((1 - open) * 4.5).toFixed(2) + 'vh');
     s.img.style.setProperty('--py', ((p - 0.5) * -7).toFixed(2) + '%');
 
-    // Tekst odjezdza w gore, zanim wjedzie na niego kolejna sekcja — inaczej
-    // nadciagajacy pasek przecinalby naglowek w pol.
-    const wyjscie = clamp((p - 0.6) / 0.22, 0, 1);
+    // Tekst odjezdza w gore, ZANIM nadciagajaca sekcja dosiegnie jego dolnej
+    // krawedzi. Prog liczymy z realnej pozycji panelu, a nie z postepu sekcji —
+    // przy zgadywanym progu panel wjezdzal w tekst, kiedy ten mial jeszcze
+    // ponad polowe krycia.
+    let wyjscie = 0;
+    if (s.next) {
+      const nr    = s.next.getBoundingClientRect();
+      const start = vh + 120;                              // panel jeszcze pod ekranem
+      const koniec = Math.min(s.capBottom + 60, vh - 40);  // tuz pod dolem tekstu
+      wyjscie = clamp((start - nr.top) / Math.max(1, start - koniec), 0, 1);
+    }
     s.inner.style.opacity   = (1 - wyjscie).toFixed(3);
     s.inner.style.transform = 'translateY(' + (-wyjscie * 70).toFixed(1) + 'px)';
   }
@@ -294,16 +319,47 @@ function scenesTick() {
    podswietla pozycja na liscie i przenika podpis. */
 const kroki = $$('.steps').map(el => ({
   el,
+  sticky: $('.steps-sticky', el),
   imgs: $$('.steps-media img', el),
   lis:  $$('.steps-list li', el),
   caps: $$('.step-item', el),
+  capBox: $('.steps-cap', el),
+  lista:  $('.steps-list', el),
+  next: el.nextElementSibling,
+  capBottom: 0,
   cur: -1
 }));
+
+/* Dolna krawedz podpisu w przypietym ekranie. Jak w scenach — mierzone bez
+   transformu, ktory ustawiamy co klatke. */
+function measureSteps() {
+  for (const s of kroki) {
+    const bylo = s.capBox.style.transform;
+    s.capBox.style.transform = 'none';
+    const cr = s.capBox.getBoundingClientRect(), sr = s.sticky.getBoundingClientRect();
+    s.capBottom = Math.round(cr.bottom - sr.top);
+    s.capBox.style.transform = bylo;
+  }
+}
+measureSteps();
 
 function stepsTick() {
   for (const s of kroki) {
     const r = s.el.getBoundingClientRect();
     if (r.bottom < -100 || r.top > vh + 100) continue;
+    // Podpis i lista gasna, zanim nadciagajaca sekcja na nie wjedzie — tak samo
+    // jak w scenach; inaczej panel przecinalby je w pol.
+    if (s.next) {
+      const nr   = s.next.getBoundingClientRect();
+      const start = vh + 120;
+      const koniec = Math.min(s.capBottom + 60, vh - 40);
+      const wy = clamp((start - nr.top) / Math.max(1, start - koniec), 0, 1);
+      const krycie = (1 - wy).toFixed(3);
+      s.capBox.style.opacity = krycie;
+      s.lista.style.opacity  = krycie;
+      s.capBox.style.transform = 'translateY(' + (-wy * 60).toFixed(1) + 'px)';
+    }
+
     const p = clamp(-r.top / Math.max(1, s.el.offsetHeight - vh), 0, 1);
     const n = s.imgs.length;
     const idx = Math.min(n - 1, Math.floor(p * n * 0.9999));

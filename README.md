@@ -103,7 +103,10 @@ Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyśl
 - **sekcja wjeżdża na przypięty kadr** — sekcja pod każdą sceną jest podciągnięta
   ujemnym marginesem na jej koniec (`-58vh`), więc zamiast po prostu nastąpić po zdjęciu,
   wsuwa się na nie: z zaokrągloną górną krawędzią i cieniem rzuconym w górę. Tekst sceny
-  odjeżdża w górę i gaśnie, zanim panel na niego wjedzie — inaczej przecinałby nagłówek w pół,
+  odjeżdża w górę i gaśnie, **zanim** panel dosięgnie jego dolnej krawędzi — próg liczony
+  jest z rzeczywistej pozycji panelu i zmierzonej wysokości bloku tekstu, nie ze zgadywanego
+  progu postępu. Pierwsze podejście używało progu „60% sekcji" i panel wjeżdżał w tekst,
+  kiedy ten miał jeszcze 55% krycia. To samo dotyczy podpisu w kadrze krokowym,
 - **przesłona schodzi z kadru** — każde zdjęcie w przejeździe jest zasłonięte panelem,
   który zjeżdża w miarę, jak kadr wjeżdża w ekran od prawej,
 - **nagłówki scen wjeżdżają literami** — w zwykłych sekcjach słowo po słowie (55 ms),

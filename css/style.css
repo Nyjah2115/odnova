@@ -333,7 +333,7 @@ section{ position:relative; }
 
 /* podpis w lewym dolnym rogu — kroki przenikaja */
 .steps-cap{
-  position:absolute; left:var(--pad); bottom:clamp(56px,9vh,112px); z-index:3;
+  position:absolute; left:var(--pad); bottom:clamp(74px,12vh,136px); z-index:3;
   width:min(44ch, calc(100% - var(--pad) * 2)); height:clamp(200px,26vh,250px); color:#fff;
 }
 .step-item{
@@ -715,7 +715,7 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   .steps-list{ top:auto; bottom:auto; right:var(--pad); top:clamp(88px,12vh,130px); }
   .steps-cap{ height:clamp(210px,32vh,270px); }
   .scene{ height:170vh; }
-  .scene-in{ justify-content:flex-end; padding-bottom:clamp(48px,9vh,96px); }
+  .scene-in{ justify-content:flex-end; padding-bottom:clamp(120px,22vh,220px); }
   .scene-in .sec-h2{ max-width:16ch; }
   /* w pionie kadr kroi sie na srodku i wychodzi sam sufit — schodzimy nizej */
   .scene-media img{ object-position:50% 64%; }
