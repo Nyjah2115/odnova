@@ -254,76 +254,31 @@ section{ position:relative; }
 
 /* ---------- realizacje ---------- */
 /* ============================================================
-   KADRY W TLE — zdjecie na caly ekran, tekst na wierzchu
+   PANELE — zdjecia rozwijaja sie na tle strony, a nie sa tlem
    ============================================================ */
-/* Media i tresc to rodzenstwo, ale oba sa sticky i drugie jest podciagniete
-   o wysokosc ekranu — dzieki temu trzymaja sie razem bez dodatkowego opakowania. */
-/* Sekcja pod scena jest podciagnieta na jej koniec, wiec wjezdza na przypiete
-   zdjecie zamiast po prostu po nim nastepowac. */
-.scene{ position:relative; height:200vh; margin-bottom:-58vh; background:#15120f; z-index:0; }
-.after-scene{
-  position:relative; z-index:2; background:var(--bg);
+.panels{ background:var(--bg); }
+.panels-in{
+  max-width:var(--maxw); margin:0 auto; padding:clamp(80px,13vh,170px) var(--pad);
+  display:grid; grid-template-columns:minmax(0,0.9fr) minmax(0,1.1fr); gap:clamp(28px,5vw,80px);
+  align-items:center;
 }
+.panels-txt{ display:grid; gap:16px; align-content:center; }
+.panels-txt .sec-h2{ max-width:13ch; }
+.panels-txt .lead{ max-width:36ch; }
 
-/* Trzy rozne krawedzie, zeby ten sam gest nie powtarzal sie przy kazdej scenie. */
-
-/* 1. Luk — promien poziomy to polowa szerokosci, pionowy kilkadziesiat pikseli,
-      razem daje kopule przez caly ekran (tak robi to ERA). */
-.edge-arc{
-  border-radius:50% 50% 0 0 / clamp(56px,8vh,104px) clamp(56px,8vh,104px) 0 0;
-  box-shadow:0 -30px 70px -30px rgba(21,18,15,.55);
+.panels-row{ display:flex; gap:clamp(12px,1.6vw,22px); align-items:flex-end; }
+.panel{
+  position:relative; margin:0; flex:1 1 0; min-width:0; overflow:hidden;
+  border-radius:var(--r-s); background:var(--bg-2);
+  /* Ramka rosnie, a zdjecie w srodku ma staly rozmiar — kadr sie ODSLANIA,
+     zamiast powiekszac. To ta roznica, ktora widac golym okiem. */
+  height:calc(30vh + 42vh * var(--g,0));
 }
-
-/* 2. Skos — krawedz opada z prawej w lewo. Zwykly box-shadow zostalby obciety razem
-      z ksztaltem, wiec cien robi filter, ktory idzie za kontura. */
-.edge-diag{
-  clip-path:polygon(0 clamp(48px,7vh,92px), 100% 0, 100% 100%, 0 100%);
-  filter:drop-shadow(0 -12px 26px rgba(21,18,15,.26));
+.panel:nth-child(2){ align-self:flex-start; margin-top:clamp(24px,6vh,64px); }
+.panel img{
+  position:absolute; left:0; bottom:0; width:100%; height:72vh;
+  object-fit:cover; display:block;
 }
-.edge-diag > .wrap{ padding-top:calc(clamp(72px,11vh,150px) + clamp(48px,7vh,92px)); }
-
-/* 3. Schodek — krawedz laman a raz, jak uskok w rzucie. */
-.edge-step{
-  clip-path:polygon(0 clamp(44px,6.5vh,84px), 44% clamp(44px,6.5vh,84px), 44% 0, 100% 0, 100% 100%, 0 100%);
-  filter:drop-shadow(0 -12px 26px rgba(21,18,15,.26));
-}
-.edge-step > .wrap{ padding-top:calc(clamp(72px,11vh,150px) + clamp(44px,6.5vh,84px)); }
-
-/* Zakladka na przypiete zdjecie bywa wyzsza niz pierwszy element, ktory po nim jedzie
-   (pasek hasel ma raptem kilkadziesiat pikseli). Wszystko, co moze w te zakladke wpasc,
-   musi wiec kryc samo z siebie — inaczej zdjecie przebija spod spodu.
-   Reguly z wlasnym tlem (kontakt, stopka, scena z liczba) sa nizej i wygrywaja. */
-body > section:not(.scene):not(.steps){
-  position:relative; z-index:2; background:var(--bg);
-}
-.scene-media{
-  position:sticky; top:0; height:100vh; overflow:hidden;
-}
-.scene-media img{
-  width:100%; height:116%; object-fit:cover;
-  transform:translate(var(--px,0%), var(--py,0%));
-}
-/* druga scena dryfuje w bok zamiast w pionie — inny ruch, ten sam brak skalowania */
-.scene.drift-x .scene-media img{ width:114%; height:100%; }
-.scene-media::after{
-  content:''; position:absolute; inset:0; pointer-events:none;
-  background:linear-gradient(105deg, rgba(21,18,15,.78) 0%, rgba(21,18,15,.42) 42%, rgba(21,18,15,.12) 72%);
-}
-.scene.light .scene-media::after{
-  background:linear-gradient(105deg, rgba(251,248,244,.96) 0%, rgba(251,248,244,.82) 38%, rgba(251,248,244,.3) 72%, rgba(251,248,244,0) 92%);
-}
-.scene-in{
-  position:sticky; top:0; height:100vh; margin:-100vh auto 0; z-index:2;
-  max-width:var(--maxw); padding:0 var(--pad);
-  display:flex; flex-direction:column; justify-content:center; gap:16px;
-  color:#fff;
-}
-.scene.light .scene-in{ color:var(--ink); }
-.scene-in .sec-h2{ max-width:13ch; }
-.scene-in .lead{ max-width:38ch; color:rgba(255,255,255,.82); }
-.scene.light .scene-in .lead{ color:var(--ink-2); }
-.scene-in .eyebrow{ color:rgba(255,255,255,.72); }
-.scene.light .scene-in .eyebrow{ color:var(--ink-2); }
 
 /* ============================================================
    KADR KROKOWY — jedno tlo, lista krokow, podpis zmienia sie ze scrollem
@@ -720,14 +675,14 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   transition:transform 1.05s var(--ease);
   transition-delay:calc(var(--w,0) * 55ms);
 }
-/* W scenach litery nie wjezdzaja same z siebie po wejsciu sekcji w kadr —
-   odslania je scroll, litera po literze (patrz scenesTick). */
-.scene .mask > i{
+/* W sekcjach z panelami litery nie wjezdzaja same z siebie po wejsciu w kadr —
+   odslania je scroll, litera po literze (patrz panelsTick). */
+.panels .mask > i{
   transition:transform .5s var(--ease);
   transition-delay:0s;
 }
-.scene .in .mask > i{ transform:translateY(105%); }
-.scene .mask > i.lit{ transform:none; }
+.panels .in .mask > i{ transform:translateY(105%); }
+.panels .mask > i.lit{ transform:none; }
 .in .mask > i, .mask.in > i{ transform:none; }
 
 /* ============================================================
@@ -742,25 +697,13 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   .proc-row p{ grid-column:2; }
 }
 @media (max-width:760px){
-  /* Kadry w tle: w pionie przeslona po skosie zle sie klada, wiec od dolu,
-     a tekst siada przy dolnej krawedzi. */
+  .panels-in{ grid-template-columns:1fr; gap:26px; }
+  .panel{ height:calc(26vh + 30vh * var(--g,0)); }
+  .panel img{ height:56vh; }
   .steps{ height:300vh; }
   .steps-list{ top:auto; bottom:auto; right:var(--pad); top:clamp(88px,12vh,130px); }
   .steps-cap{ height:clamp(210px,32vh,270px); }
   .edge-arc{ border-radius:50% 50% 0 0 / 42px 42px 0 0; }
-  .edge-diag{ clip-path:polygon(0 40px, 100% 0, 100% 100%, 0 100%); }
-  .edge-step{ clip-path:polygon(0 38px, 52% 38px, 52% 0, 100% 0, 100% 100%, 0 100%); }
-  .scene{ height:170vh; }
-  .scene-in{ justify-content:flex-end; padding-bottom:clamp(120px,22vh,220px); }
-  .scene-in .sec-h2{ max-width:16ch; }
-  /* w pionie kadr kroi sie na srodku i wychodzi sam sufit — schodzimy nizej */
-  .scene-media img{ object-position:50% 64%; }
-  .scene-media::after{
-    background:linear-gradient(to top, rgba(21,18,15,.9) 0%, rgba(21,18,15,.5) 52%, rgba(21,18,15,.12) 100%);
-  }
-  .scene.light .scene-media::after{
-    background:linear-gradient(to top, rgba(251,248,244,.96) 0%, rgba(251,248,244,.62) 52%, rgba(251,248,244,.08) 100%);
-  }
   .nav-links{ display:none; }
   .burger{ display:block; }
   .hero{ height:420vh; }

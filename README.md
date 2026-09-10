@@ -126,11 +126,9 @@ Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyśl
   zdjęcie, podświetla pozycja na liście po prawej (reszta zostaje przygaszona, przy aktywnej
   wyjeżdża pionowa kreska) i przenika podpis w lewym dolnym rogu. Wzorowane na
   [era-residence.com](https://www.era-residence.com), którą klient podesłał jako punkt odniesienia,
-- **kadry w tle** — dwie pełnoekranowe sceny (za zakresem prac, za pakietami i przed
-  kontaktem). Zdjęcie i tekst to rodzeństwo, ale oba są `sticky`, a drugie podciągnięte
-  o `-100vh` — dzięki temu trzymają się razem bez dodatkowego opakowania. Kadr jedzie leniwą paralaksą (samo przesunięcie w pionie — bez skalowania), a tekst wjeżdża
-  zwykłym mechanizmem masek. W pionie przesłona po skosie kładła się źle, więc poniżej
-  760 px zmienia się na pionową, a tekst siada przy dolnej krawędzi,
+- **panele, które się rozwijają** — zdjęcia leżą na tle strony w ramkach rosnących razem
+  z przewijaniem, jedna przesunięta względem drugiej. Zdjęcie w środku ma stały rozmiar,
+  więc kadr się **odsłania**, a nie powiększa — to ta różnica, którą widać gołym okiem.
 - **warianty wejść** — żeby cała strona nie powtarzała jednego gestu, każda sekcja
   wchodzi inaczej: kafle usług odsłaniają się przesłoną od dołu (`clip-path`), kroki procesu
   wjeżdżają z lewej, pakiety wyostrzają się z rozmycia, opinie prostują się z lekkiego
