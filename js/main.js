@@ -272,7 +272,8 @@ function marqueeTick(dt) {
    gdy sekcja przechodzi przez ekran. Tekst wjezdza zwyklym mechanizmem .rise. */
 const scenes = $$('.scene').map(el => ({
   el, media: $('.scene-media', el), img: $('.scene-media img', el),
-  inner: $('.scene-in', el), next: el.nextElementSibling, capBottom: 0
+  inner: $('.scene-in', el), next: el.nextElementSibling, capBottom: 0,
+  wBok: el.classList.contains('drift-x')
 }));
 
 /* Gdzie konczy sie tekst w przypietym ekranie. Mierzymy bez transformu, bo ten
@@ -294,7 +295,8 @@ function scenesTick() {
     const r = s.el.getBoundingClientRect();
     if (r.bottom < -100 || r.top > vh + 100) continue;
     const p    = clamp(-r.top / Math.max(1, s.el.offsetHeight - vh), 0, 1);
-    s.img.style.setProperty('--py', ((p - 0.5) * -7).toFixed(2) + '%');
+    if (s.wBok) s.img.style.setProperty('--px', ((p - 0.5) * -6).toFixed(2) + '%');
+    else        s.img.style.setProperty('--py', ((p - 0.5) * -7).toFixed(2) + '%');
 
     // Tekst odjezdza w gore, ZANIM nadciagajaca sekcja dosiegnie jego dolnej
     // krawedzi. Prog liczymy z realnej pozycji panelu, a nie z postepu sekcji —

@@ -102,8 +102,10 @@ Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyśl
   bo animacja CSS nie wie nic o prędkości scrolla,
 - **sekcja wjeżdża na przypięty kadr** — sekcja pod każdą sceną jest podciągnięta
   ujemnym marginesem na jej koniec (`-58vh`), więc zamiast po prostu nastąpić po zdjęciu,
-  wsuwa się na nie **łukiem**: górna krawędź ma promień poziomy równy połowie szerokości
-  i pionowy rzędu 70 px, co daje kopułę przez cały ekran (tak samo robi to ERA).
+  wsuwa się na nie, za każdym razem **inną krawędzią**: proces łukiem (kopuła przez cały
+  ekran, jak u ERY), opinie skosem opadającym z prawej w lewo, kontakt schodkiem załamanym
+  na 44% szerokości. Skos i schodek wycina `clip-path`, który obciąłby zwykły `box-shadow`,
+  więc cień robi tam `drop-shadow` — idzie za konturem kształtu.
   Pasek haseł przeniósł się przed scenę, bo przy stu pikselach wysokości nie udźwignąłby łuku
   — teraz wjeżdżają wysokie sekcje: proces, opinie i kontakt.
   Zakładka bywa wyższa niż pierwszy element, który po scenie jedzie (pasek haseł ma raptem
