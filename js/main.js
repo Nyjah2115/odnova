@@ -134,12 +134,12 @@ const tick = t => {
   apply(false);
   // tasma i pasek postepu sa ozdoba — gdyby ktorakolwiek rzucila bledem,
   // nie moze zabic petli, ktora obsluguje przewijanie hero
-  try { strip(); revealTick(); stepsTick(); marqueeTick(dt); pageProgress(); } catch (e) {}
+  try { strip(); scenesTick(); revealTick(); stepsTick(); marqueeTick(dt); pageProgress(); } catch (e) {}
   requestAnimationFrame(tick);
 };
 requestAnimationFrame(tick);
 
-const remeasure = () => { measure(); measureStrips(); measureSteps(); setNav(); };
+const remeasure = () => { measure(); measureStrips(); measureScenes(); measureSteps(); measureReveals(); setNav(); };
 addEventListener('scroll', setNav, { passive: true });
 addEventListener('resize', remeasure);
 addEventListener('load', remeasure);
@@ -172,7 +172,7 @@ $$('.sec-h2').forEach(h => {
   const words = h.textContent.trim().split(/\s+/);
   // W sekcjach z panelami naglowek odslania sie litera po literze (robi to scroll).
   // W zwyklych sekcjach wystarczy slowo po slowie.
-  const poLiterach = !!h.closest('.reveal');
+  const poLiterach = !!(h.closest('.reveal') || h.closest('.scene'));
   h.textContent = '';
   let n = 0;
   words.forEach((w, i) => {
@@ -267,6 +267,67 @@ function marqueeTick(dt) {
   marqIn.style.transform = 'translate3d(' + marqX.toFixed(1) + 'px,0,0) skewX(' + skos.toFixed(2) + 'deg)';
 }
 
+/* ————————————————— KADRY W TLE —————————————————
+   Zdjecie otwiera sie od srodka (clip-path) i jedzie leniwa paralaksa,
+   gdy sekcja przechodzi przez ekran. Tekst wjezdza zwyklym mechanizmem .rise. */
+const scenes = $$('.scene').map(el => ({
+  el, media: $('.scene-media', el), img: $('.scene-media img', el),
+  inner: $('.scene-in', el), next: el.nextElementSibling, capBottom: 0,
+  wBok: el.classList.contains('drift-x'),
+  litery: $$('.sec-h2 .mask > i', el),
+  odslon: -1
+}));
+
+/* Gdzie konczy sie tekst w przypietym ekranie. Mierzymy bez transformu, bo ten
+   jest ustawiany co klatke i zafalszowalby pomiar. */
+function measureScenes() {
+  for (const s of scenes) {
+    const bylo = s.inner.style.transform;
+    s.inner.style.transform = 'none';
+    const i0 = s.inner.getBoundingClientRect();
+    const last = s.inner.lastElementChild.getBoundingClientRect();
+    s.capBottom = Math.round(last.bottom - i0.top);
+    s.inner.style.transform = bylo;
+  }
+}
+measureScenes();
+
+function scenesTick() {
+  for (const s of scenes) {
+    const r = s.el.getBoundingClientRect();
+    if (r.bottom < -100 || r.top > vh + 100) continue;
+    const p    = clamp(-r.top / Math.max(1, s.el.offsetHeight - vh), 0, 1);
+    if (s.wBok) s.img.style.setProperty('--px', ((p - 0.5) * -6).toFixed(2) + '%');
+    else        s.img.style.setProperty('--py', ((p - 0.5) * -7).toFixed(2) + '%');
+
+    // Naglowek odslania sie litera po literze w miare przewijania, a nie caly naraz
+    // po wejsciu w kadr — tak robi to ERA i tak wyglada to duzo lepiej na nagraniu.
+    if (s.litery.length) {
+      const ile = Math.round(clamp((p - 0.04) / 0.34, 0, 1) * s.litery.length);
+      if (ile !== s.odslon) {
+        const od = Math.min(s.odslon < 0 ? 0 : s.odslon, ile);
+        const do_ = Math.max(s.odslon, ile);
+        for (let i = od; i < do_; i++) s.litery[i].classList.toggle('lit', i < ile);
+        s.odslon = ile;
+      }
+    }
+
+    // Tekst odjezdza w gore, ZANIM nadciagajaca sekcja dosiegnie jego dolnej
+    // krawedzi. Prog liczymy z realnej pozycji panelu, a nie z postepu sekcji —
+    // przy zgadywanym progu panel wjezdzal w tekst, kiedy ten mial jeszcze
+    // ponad polowe krycia.
+    let wyjscie = 0;
+    if (s.next) {
+      const nr    = s.next.getBoundingClientRect();
+      const start = vh + 120;                              // panel jeszcze pod ekranem
+      const koniec = Math.min(s.capBottom + 60, vh - 40);  // tuz pod dolem tekstu
+      wyjscie = clamp((start - nr.top) / Math.max(1, start - koniec), 0, 1);
+    }
+    s.inner.style.opacity   = (1 - wyjscie).toFixed(3);
+    s.inner.style.transform = 'translateY(' + (-wyjscie * 70).toFixed(1) + 'px)';
+  }
+}
+
 /* ————————————————— ODSLONA —————————————————
    Dwa okna na to samo zdjecie rozrastaja sie w jeden pelny kadr. Kazde okno to ta sama
    fotografia przycieta wlasnym clip-path; przewijanie sprowadza przyciecia do zera.
@@ -280,9 +341,18 @@ const odslony = $$('.reveal').map(el => ({
   odslon: -1
 }));
 
-// przyciecia startowe: [gora, prawo, dol, lewo] w procentach
-const START1 = [26, 53, 12, 11];
-const START2 = [9, 11, 28, 53];
+// Przyciecia startowe: [gora, prawo, dol, lewo] w procentach.
+// W waskim oknie okna obok siebie schodza do paskow po ~140 px, wiec tam ustawiamy
+// je jedno nad drugim — ten sam efekt, tylko w pionie.
+let START1 = [26, 53, 12, 11];
+let START2 = [9, 11, 28, 53];
+
+function measureReveals() {
+  const waskie = innerWidth < 760;
+  START1 = waskie ? [7, 9, 54, 9] : [26, 53, 12, 11];
+  START2 = waskie ? [54, 9, 7, 9]  : [9, 11, 28, 53];
+}
+measureReveals();
 
 function revealTick() {
   for (const s of odslony) {

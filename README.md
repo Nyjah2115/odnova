@@ -126,11 +126,14 @@ Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyśl
   zdjęcie, podświetla pozycja na liście po prawej (reszta zostaje przygaszona, przy aktywnej
   wyjeżdża pionowa kreska) i przenika podpis w lewym dolnym rogu. Wzorowane na
   [era-residence.com](https://www.era-residence.com), którą klient podesłał jako punkt odniesienia,
-- **odsłona z dwóch okien** — sekcja zaczyna się dwoma prostokątami na tle strony: lewy
-  niżej, prawy wyżej, z przerwą między nimi. To dwie kopie **tego samego zdjęcia**, każda
-  przycięta własnym `clip-path`. Przewijanie sprowadza przycięcia do zera — okna rosną,
-  przerwa znika i zostaje jeden kadr na cały ekran, a dopiero wtedy wchodzi nagłówek,
-  litera po literze. Fotografia nie zmienia rozmiaru ani na chwilę; rosną wyłącznie okna.
+- **kadr w tle z łukiem** (po zakresie prac) — pełnoekranowe zdjęcie przypięte na czas
+  przewijania sekcji, po którym wjeżdża proces łukiem przez cały ekran,
+- **odsłona z dwóch okien** (przed kontaktem) — sekcja zaczyna się dwoma prostokątami:
+  to dwie kopie **tego samego zdjęcia**, każda przycięta własnym `clip-path`. Przewijanie
+  sprowadza przycięcia do zera — okna rosną, przerwa znika i zostaje jeden kadr na cały
+  ekran, a dopiero wtedy wchodzi nagłówek, litera po literze. Fotografia nie zmienia
+  rozmiaru ani na chwilę. Poniżej 760 px okna ustawiają się **jedno nad drugim**: obok
+  siebie schodziły do pasków po ~140 px i cały efekt się rozsypywał.
 - **warianty wejść** — żeby cała strona nie powtarzała jednego gestu, każda sekcja
   wchodzi inaczej: kafle usług odsłaniają się przesłoną od dołu (`clip-path`), kroki procesu
   wjeżdżają z lewej, pakiety wyostrzają się z rozmycia, opinie prostują się z lekkiego
