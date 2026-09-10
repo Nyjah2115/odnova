@@ -254,31 +254,35 @@ section{ position:relative; }
 
 /* ---------- realizacje ---------- */
 /* ============================================================
-   PANELE — zdjecia rozwijaja sie na tle strony, a nie sa tlem
+   ODSLONA — dwa okna na to samo zdjecie, ktore rozrastaja sie w pelny kadr
    ============================================================ */
-.panels{ background:var(--bg); }
-.panels-in{
-  max-width:var(--maxw); margin:0 auto; padding:clamp(80px,13vh,170px) var(--pad);
-  display:grid; grid-template-columns:minmax(0,0.9fr) minmax(0,1.1fr); gap:clamp(28px,5vw,80px);
-  align-items:center;
+/* Na poczatku widac dwa prostokaty na tle strony: lewy nizej, prawy wyzej, z przerwa
+   miedzy nimi. To dwie kopie tego samego zdjecia, kazda przycieta wlasnym clip-path.
+   Przewijanie rozsuwa przyciecia do zera — okna rosna, przerwa znika i zostaje jeden
+   kadr na cala szerokosc. Samo zdjecie ani na chwile nie zmienia rozmiaru. */
+.reveal{ position:relative; height:250vh; background:var(--bg); }
+.reveal-sticky{ position:sticky; top:0; height:100vh; overflow:hidden; }
+.reveal-media{ position:absolute; inset:0; }
+.win{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;
 }
-.panels-txt{ display:grid; gap:16px; align-content:center; }
-.panels-txt .sec-h2{ max-width:13ch; }
-.panels-txt .lead{ max-width:36ch; }
+.w1{ clip-path:inset(var(--t1,26%) var(--r1,53%) var(--b1,12%) var(--l1,11%)); }
+.w2{ clip-path:inset(var(--t2,9%)  var(--r2,11%) var(--b2,28%) var(--l2,53%)); }
 
-.panels-row{ display:flex; gap:clamp(12px,1.6vw,22px); align-items:flex-end; }
-.panel{
-  position:relative; margin:0; flex:1 1 0; min-width:0; overflow:hidden;
-  border-radius:var(--r-s); background:var(--bg-2);
-  /* Ramka rosnie, a zdjecie w srodku ma staly rozmiar — kadr sie ODSLANIA,
-     zamiast powiekszac. To ta roznica, ktora widac golym okiem. */
-  height:calc(30vh + 42vh * var(--g,0));
+.reveal-txt{
+  position:absolute; z-index:2; left:0; right:0; top:0; height:100%;
+  max-width:var(--maxw); margin:0 auto; padding:clamp(96px,15vh,150px) var(--pad) 0;
+  display:flex; flex-direction:column; gap:14px; align-items:flex-start;
+  color:#fff; opacity:0; pointer-events:none;
 }
-.panel:nth-child(2){ align-self:flex-start; margin-top:clamp(24px,6vh,64px); }
-.panel img{
-  position:absolute; left:0; bottom:0; width:100%; height:72vh;
-  object-fit:cover; display:block;
+/* przeslona wchodzi razem z tekstem — bez niej biel ginie na jasnym kadrze */
+.reveal-txt::before{
+  content:''; position:absolute; inset:0 0 auto 0; height:78%; z-index:-1; pointer-events:none;
+  background:linear-gradient(to bottom, rgba(21,18,15,.78) 0%, rgba(21,18,15,.42) 42%, rgba(21,18,15,0) 100%);
 }
+.reveal-txt .sec-h2{ max-width:15ch; text-shadow:0 2px 40px rgba(21,18,15,.5); }
+.reveal-txt .lead{ max-width:34ch; color:rgba(255,255,255,.86); text-shadow:0 1px 22px rgba(21,18,15,.8); }
+.reveal-txt .eyebrow{ color:rgba(255,255,255,.78); }
 
 /* ============================================================
    KADR KROKOWY — jedno tlo, lista krokow, podpis zmienia sie ze scrollem
@@ -675,14 +679,14 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   transition:transform 1.05s var(--ease);
   transition-delay:calc(var(--w,0) * 55ms);
 }
-/* W sekcjach z panelami litery nie wjezdzaja same z siebie po wejsciu w kadr —
-   odslania je scroll, litera po literze (patrz panelsTick). */
-.panels .mask > i{
+/* Naglowek odslania sie dopiero, gdy okna zlaly sie w pelny kadr —
+   litera po literze, sterowane scrollem (patrz revealTick). */
+.reveal .mask > i{
   transition:transform .5s var(--ease);
   transition-delay:0s;
 }
-.panels .in .mask > i{ transform:translateY(105%); }
-.panels .mask > i.lit{ transform:none; }
+.reveal .in .mask > i{ transform:translateY(105%); }
+.reveal .mask > i.lit{ transform:none; }
 .in .mask > i, .mask.in > i{ transform:none; }
 
 /* ============================================================
@@ -697,9 +701,9 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   .proc-row p{ grid-column:2; }
 }
 @media (max-width:760px){
-  .panels-in{ grid-template-columns:1fr; gap:26px; }
-  .panel{ height:calc(26vh + 30vh * var(--g,0)); }
-  .panel img{ height:56vh; }
+  .reveal{ height:220vh; }
+  .reveal-txt{ padding-top:clamp(84px,12vh,120px); }
+  .reveal-txt .sec-h2{ max-width:none; }
   .steps{ height:300vh; }
   .steps-list{ top:auto; bottom:auto; right:var(--pad); top:clamp(88px,12vh,130px); }
   .steps-cap{ height:clamp(210px,32vh,270px); }

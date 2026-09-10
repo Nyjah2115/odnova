@@ -134,7 +134,7 @@ const tick = t => {
   apply(false);
   // tasma i pasek postepu sa ozdoba — gdyby ktorakolwiek rzucila bledem,
   // nie moze zabic petli, ktora obsluguje przewijanie hero
-  try { strip(); panelsTick(); stepsTick(); marqueeTick(dt); pageProgress(); } catch (e) {}
+  try { strip(); revealTick(); stepsTick(); marqueeTick(dt); pageProgress(); } catch (e) {}
   requestAnimationFrame(tick);
 };
 requestAnimationFrame(tick);
@@ -172,7 +172,7 @@ $$('.sec-h2').forEach(h => {
   const words = h.textContent.trim().split(/\s+/);
   // W sekcjach z panelami naglowek odslania sie litera po literze (robi to scroll).
   // W zwyklych sekcjach wystarczy slowo po slowie.
-  const poLiterach = !!h.closest('.panels');
+  const poLiterach = !!h.closest('.reveal');
   h.textContent = '';
   let n = 0;
   words.forEach((w, i) => {
@@ -267,32 +267,48 @@ function marqueeTick(dt) {
   marqIn.style.transform = 'translate3d(' + marqX.toFixed(1) + 'px,0,0) skewX(' + skos.toFixed(2) + 'deg)';
 }
 
-/* ————————————————— PANELE —————————————————
-   Zdjecia leza na tle strony w ramkach, ktore rozwijaja sie razem z przewijaniem.
-   Zdjecie w srodku ma staly rozmiar — rosnie tylko ramka, wiec kadr sie odslania,
-   a nie powieksza. Naglowek odslania sie przy tym litera po literze. */
-const panele = $$('.panels').map(el => ({
+/* ————————————————— ODSLONA —————————————————
+   Dwa okna na to samo zdjecie rozrastaja sie w jeden pelny kadr. Kazde okno to ta sama
+   fotografia przycieta wlasnym clip-path; przewijanie sprowadza przyciecia do zera.
+   Zdjecie nie zmienia rozmiaru ani na chwile — rosna wylacznie okna. */
+const odslony = $$('.reveal').map(el => ({
   el,
-  ramki:  $$('.panel', el),
+  w1: $('.w1', el),
+  w2: $('.w2', el),
+  txt: $('.reveal-txt', el),
   litery: $$('.sec-h2 .mask > i', el),
   odslon: -1
 }));
 
-function panelsTick() {
-  for (const s of panele) {
+// przyciecia startowe: [gora, prawo, dol, lewo] w procentach
+const START1 = [26, 53, 12, 11];
+const START2 = [9, 11, 28, 53];
+
+function revealTick() {
+  for (const s of odslony) {
     const r = s.el.getBoundingClientRect();
     if (r.bottom < -100 || r.top > vh + 100) continue;
 
-    // 0 gdy sekcja dopiero wchodzi od dolu, 1 gdy jej srodek minal srodek ekranu
-    const p = clamp((vh - r.top) / (vh * 0.9 + r.height * 0.35), 0, 1);
+    const p = clamp(-r.top / Math.max(1, s.el.offsetHeight - vh), 0, 1);
+    // okna schodza do zera na pierwszych 62% sekcji, z lekkim wyprzedzeniem prawego
+    const e = t => 1 - Math.pow(1 - t, 3);
+    const g1 = e(clamp(p / 0.62, 0, 1));
+    const g2 = e(clamp((p - 0.05) / 0.62, 0, 1));
 
-    s.ramki.forEach((ramka, i) => {
-      const g = clamp((p - i * 0.07) / 0.62, 0, 1);
-      ramka.style.setProperty('--g', g.toFixed(3));
-    });
+    const ustaw = (el, start, g, n) => {
+      el.style.setProperty('--t' + n, (start[0] * (1 - g)).toFixed(2) + '%');
+      el.style.setProperty('--r' + n, (start[1] * (1 - g)).toFixed(2) + '%');
+      el.style.setProperty('--b' + n, (start[2] * (1 - g)).toFixed(2) + '%');
+      el.style.setProperty('--l' + n, (start[3] * (1 - g)).toFixed(2) + '%');
+    };
+    ustaw(s.w1, START1, g1, 1);
+    ustaw(s.w2, START2, g2, 2);
+
+    // tekst wchodzi dopiero, gdy kadr jest juz pelny
+    s.txt.style.opacity = clamp((p - 0.58) / 0.14, 0, 1).toFixed(3);
 
     if (!s.litery.length) continue;
-    const ile = Math.round(clamp((p - 0.06) / 0.4, 0, 1) * s.litery.length);
+    const ile = Math.round(clamp((p - 0.6) / 0.26, 0, 1) * s.litery.length);
     if (ile === s.odslon) continue;
     const od = Math.min(s.odslon < 0 ? 0 : s.odslon, ile);
     const do_ = Math.max(s.odslon, ile);
