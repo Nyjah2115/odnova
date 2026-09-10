@@ -129,9 +129,9 @@ Do tego rzeczy, które robią różnicę dopiero w ruchu — strona jest pomyśl
 - **kadr w tle z łukiem** (po zakresie prac) — pełnoekranowe zdjęcie przypięte na czas
   przewijania sekcji, po którym wjeżdża proces łukiem przez cały ekran,
 - **ciemne domknięcie** — ostatnia sekcja przed kontaktem to pas w kolorze atramentu:
-  duży nagłówek wersalikami wjeżdżający literami, kreska rysująca się od lewej, jedno
-  zdanie i przycisk. Bez zdjęcia — świadomie, bo materiał stockowy w tym miejscu był
-  renderem 3D i to było widać.
+  po lewej nagłówek wersalikami wjeżdżający literami, kreska rysująca się od lewej, jedno
+  zdanie i przycisk; po prawej zdjęcie w kadrze 4:5. Zdjęcie jest tu **prawdziwą fotografią**,
+  nie wizualizacją — poprzednie było renderem 3D i to było widać.
 - **warianty wejść** — żeby cała strona nie powtarzała jednego gestu, każda sekcja
   wchodzi inaczej: kafle usług odsłaniają się przesłoną od dołu (`clip-path`), kroki procesu
   wjeżdżają z lewej, pakiety wyostrzają się z rozmycia, opinie prostują się z lekkiego
