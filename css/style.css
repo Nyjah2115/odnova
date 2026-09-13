@@ -125,8 +125,9 @@ body.menu-open .mobile-menu{ clip-path:circle(150% at 92% 5%); pointer-events:au
 /* ============================================================
    HERO — 4 etapy sterowane scrollem
    ============================================================ */
-.hero{ position:relative; height:460vh; background:#15120f; }
-.hero-sticky{ position:sticky; top:0; height:100vh; overflow:hidden; }
+/* Hero ma jeden ekran — remont odtwarza sie sam, nie trzeba go przewijac. */
+.hero{ position:relative; height:100vh; min-height:560px; background:#15120f; }
+.hero-sticky{ position:relative; height:100%; overflow:hidden; }
 
 .stage{ position:absolute; inset:0; background:#15120f; }
 .stage video, .stage .frame{
@@ -786,7 +787,6 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   .edge-arc{ border-radius:50% 50% 0 0 / 42px 42px 0 0; }
   .nav-links{ display:none; }
   .burger{ display:block; }
-  .hero{ height:420vh; }
   .hero-top{ position:static; margin-top:auto; }
   .hero-inner{ padding-bottom:clamp(28px,5vh,52px); }
   .hero-h1{ font-size:clamp(30px,8.8vw,48px); max-width:none; }

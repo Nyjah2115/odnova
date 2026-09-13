@@ -1,6 +1,6 @@
 /* ============================================================
    ODNOVA — logika strony
-   Sercem jest hero: 4 klipy po 5 s, przewijane scrollem.
+   Sercem jest hero: 4 klipy po 5 s, odtwarzane po kolei w petli.
    Klip N konczy sie dokladnie ta klatka, ktora zaczyna sie klip N+1,
    wiec przelaczenie miedzy nimi jest niewidoczne.
    ============================================================ */
@@ -41,24 +41,25 @@ const fills   = segs.map(s => $('i', s));
 const STAGES = 4;
 const CLIP   = 5;               // dlugosc pojedynczego klipu w sekundach
 
-let heroTop = 0, heroRange = 1, vh = innerHeight;
-let smooth = 0, target = 0, curStage = -1, curFrame = -1;
+let heroTop = 0, heroH = 1, vh = innerHeight;
+let curStage = -1, curFrame = -1;
 let videoMode = false;          // wlaczamy dopiero, gdy wszystkie klipy sa gotowe
+let aktywny = 0;                // ktory z czterech klipow wlasnie gra
 
 const measure = () => {
   vh = innerHeight;
   const r = hero.getBoundingClientRect();
   heroTop = r.top + scrollY;
-  heroRange = Math.max(1, hero.offsetHeight - vh);
+  heroH = hero.offsetHeight;
 };
 measure();
 
-/* Pasek nawigacji bieleje dopiero po ostatnim etapie — dopoki trwa hero,
-   nad ciemnym kadrem ma zostac przezroczysty. */
-const setNav = () => nav.classList.toggle('solid', scrollY > heroTop + heroRange - 8);
+/* Pasek nawigacji bieleje, gdy hero zjedzie spod niego — nad ciemnym kadrem
+   ma zostac przezroczysty. */
+const setNav = () => nav.classList.toggle('solid', scrollY > heroTop + heroH - 90);
 setNav();
 
-/* --- czy mozemy scrubowac wideo? --- */
+/* --- czy klipy sa gotowe do odtwarzania? --- */
 const ready = v => new Promise(res => {
   if (v.readyState >= 2) return res(true);
   const ok   = () => { cleanup(); res(true); };
@@ -73,13 +74,97 @@ const ready = v => new Promise(res => {
   v.addEventListener('error', fail, { once: true });
 });
 
-if (!reduced) {
+/* --- odtwarzanie: cztery klipy leca po kolei same z siebie ---
+   Klip N konczy sie ta sama klatka, ktora zaczyna sie N+1, wiec podmiana w chwili
+   'ended' jest niewidoczna. Po ostatnim chwila na gotowym wnetrzu i od nowa. */
+const pokaz = idx => {
+  aktywny = idx;
+  vids.forEach((v, i) => v.classList.toggle('on', i === idx));
+};
+let naKlatkach = false;
+let ruszyl = false;             // czy film juz wystartowal po zejsciu kurtyny
+let zagral = false;             // czy ktorykolwiek klip faktycznie ruszyl (event 'playing')
+const graj = idx => {
+  ruszyl = true;
+  const v = vids[idx];
+  try { v.currentTime = 0; } catch (e) {}
+  pokaz(idx);
+  const p = v.play();
+  // Niektore przegladarki blokuja autoodtwarzanie nawet wyciszonego wideo
+  // (np. iPhone w trybie oszczedzania energii) — wtedy przechodzimy na klatki.
+  // ALE tylko przy NotAllowedError i tylko zanim cokolwiek zagralo: play() odrzuca
+  // tez karta w tle albo przerwane odtwarzanie, a to nie jest powod, zeby na zawsze
+  // zamienic film na slajdy. Takie przypadki wznawia obsluga visibilitychange nizej.
+  if (p && p.catch) p.catch(err => {
+    if (naKlatkach || zagral || !err || err.name !== 'NotAllowedError') return;
+    naKlatkach = true;
+    videoMode = false;
+    vids.forEach(x => x.classList.remove('on'));
+    klatkiNaZegarze();
+  });
+};
+
+// Film ma ruszyc dopiero, gdy zejdzie kurtyna preloadera — inaczej pierwsze sekundy
+// (stan surowy) przelatuja za kurtyna i nikt ich nie widzi. Obserwujemy klase 'loaded',
+// bo dodaje ja zarowno preloader, jak i bezpiecznik w <head>.
+const poKurtynie = fn => {
+  if (document.body.classList.contains('loaded')) return fn();
+  const mo = new MutationObserver(() => {
+    if (!document.body.classList.contains('loaded')) return;
+    mo.disconnect();
+    setTimeout(fn, 350);            // kurtyna jest wtedy w polowie drogi w gore
+  });
+  mo.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+};
+
+// Bez wideo (brak plikow) klatki zmieniaja sie na zegarze — ten sam rytm, co film.
+const klatkiNaZegarze = () => {
+  let fi = 0;
+  const pokazKlatke = () => {
+    frames.forEach((f, i) => f.classList.toggle('on', i === fi));
+    paintStage(Math.min(STAGES - 1, fi), fi);
+    fi = (fi + 1) % frames.length;
+  };
+  pokazKlatke();
+  setInterval(pokazKlatke, CLIP * 1000 / 1.6);
+};
+
+if (reduced) {
+  // przy ograniczonych animacjach od razu gotowe wnetrze, bez ruchu
+  frames.forEach((f, i) => f.classList.toggle('on', i === frames.length - 1));
+  requestAnimationFrame(() => paintStage(STAGES - 1, STAGES));
+} else {
   Promise.all(vids.map(ready)).then(res => {
-    if (!res.every(Boolean)) return;          // brak plikow -> zostajemy na klatkach
+    if (!res.every(Boolean)) return poKurtynie(klatkiNaZegarze);
     videoMode = true;
-    vids.forEach(v => { try { v.pause(); v.currentTime = 0; } catch (e) {} });
     frames.forEach(f => f.classList.remove('on'));
-    apply(true);
+    vids.forEach((v, i) => {
+      v.loop = false;
+      v.addEventListener('playing', () => { zagral = true; });
+      v.addEventListener('ended', () => {
+        if (i < STAGES - 1) graj(i + 1);
+        else setTimeout(() => graj(0), 1800);
+      });
+    });
+    pokaz(0);                         // pierwszy kadr stoi za kurtyna
+    poKurtynie(() => graj(0));
+
+    // Po powrocie do karty wznawiamy od miejsca, w ktorym przegladarka zatrzymala film.
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState !== 'visible' || !videoMode || !ruszyl) return;
+      const v = vids[aktywny];
+      if (v.ended) graj(aktywny < STAGES - 1 ? aktywny + 1 : 0);
+      else if (v.paused) v.play().catch(() => {});
+    });
+
+    // poza ekranem film stoi — nie ma sensu dekodowac czegos, czego nikt nie widzi
+    new IntersectionObserver(([e]) => {
+      const v = vids[aktywny];
+      // wznawiamy tylko film, ktory juz ruszyl — observer zglasza widocznosc od razu
+      // przy podpieciu i bez tej flagi puszczalby wideo jeszcze za kurtyna
+      if (e.isIntersecting) { if (ruszyl && v.paused && !v.ended) v.play().catch(() => {}); }
+      else v.pause();
+    }, { threshold: 0.05 }).observe(hero);
   });
 }
 
@@ -93,33 +178,14 @@ const paintStage = (idx, g) => {
   fills.forEach((f, i) => { f.style.width = (clamp(g - i, 0, 1) * 100).toFixed(1) + '%'; });
 };
 
-/* --- glowna aktualizacja --- */
-const apply = force => {
-  const g    = smooth * STAGES;                 // 0..4
-  const idx  = Math.min(STAGES - 1, Math.floor(g));
-  const loc  = clamp(g - idx, 0, 1);
-
+/* --- podpis etapu i pasek postepu ida za czasem odtwarzania --- */
+const heroTick = () => {
   if (videoMode) {
-    vids.forEach((v, i) => v.classList.toggle('on', i === idx));
-    const v = vids[idx];
+    const v = vids[aktywny];
     const dur = (isFinite(v.duration) && v.duration > 0) ? v.duration : CLIP;
-    const t = clamp(loc * dur, 0, dur - 0.05);
-    if (force || Math.abs(v.currentTime - t) > 0.03) {
-      try { v.currentTime = t; } catch (e) {}
-    }
-    // sasiedni klip trzymamy na skrajnej klatce, zeby podmiana byla bezszwowa
-    const nx = vids[idx + 1];
-    if (nx && nx.currentTime > 0.05) { try { nx.currentTime = 0; } catch (e) {} }
-  } else {
-    const fi = Math.min(4, Math.round(g));
-    if (fi !== curFrame) {
-      frames.forEach((f, i) => f.classList.toggle('on', i === fi));
-      curFrame = fi;
-    }
+    paintStage(aktywny, aktywny + clamp(v.currentTime / dur, 0, 1));
   }
-
-  paintStage(idx, g);
-  sticky.classList.toggle('moved', smooth > 0.02);
+  sticky.classList.toggle('moved', scrollY > 20);
 };
 
 /* --- petla rAF --- */
@@ -128,12 +194,8 @@ const tick = t => {
   const dt = prevT ? Math.min(50, t - prevT) : 16;
   prevT = t;
   if (lenis) { try { lenis.raf(t); } catch (e) {} }
-  target = clamp((scrollY - heroTop) / heroRange, 0, 1);
-  smooth += (target - smooth) * (reduced ? 1 : 0.14);
-  if (Math.abs(target - smooth) < 0.0004) smooth = target;
-  apply(false);
-  // tasma i pasek postepu sa ozdoba — gdyby ktorakolwiek rzucila bledem,
-  // nie moze zabic petli, ktora obsluguje przewijanie hero
+  heroTick();
+  // reszta to ozdoba — gdyby ktorakolwiek rzucila bledem, nie moze zabic petli
   try { strip(); scenesTick(); stepsTick(); marqueeTick(dt); pageProgress(); } catch (e) {}
   requestAnimationFrame(tick);
 };

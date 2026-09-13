@@ -5,11 +5,14 @@ Koncepcyjny landing page firmy remontowej. Projekt do portfolio.
 
 ## O co chodzi
 
-Cały pomysł siedzi w sekcji głównej. Zamiast zdjęcia albo pętli wideo w tle jest
-**jedno ujęcie remontu sterowane przewijaniem strony**: kamera stoi w miejscu, a
-mieszkanie przechodzi na oczach użytkownika przez cztery etapy — od stanu surowego
-do urządzonego salonu. Przewijasz w dół, remont idzie do przodu; przewijasz w górę,
-cofa się. Razem 20 sekund materiału podzielonych po 5 sekund na etap.
+Cały pomysł siedzi w sekcji głównej. Zamiast zdjęcia w tle jest **jedno ujęcie
+remontu, które odtwarza się samo**: kamera stoi w miejscu, a mieszkanie przechodzi
+na oczach użytkownika przez cztery etapy — od stanu surowego do urządzonego salonu.
+Razem 20 sekund materiału podzielonych po 5 sekund na etap, w pętli.
+
+Pierwsza wersja była przewijana scrollem (hero na 460vh, `currentTime` liczony
+z pozycji strony). Klient wolał, żeby remont leciał jak film, więc hero ma teraz
+jeden ekran, a scroll służy już tylko do zjazdu w dół strony.
 
 Podpis pod kadrem i pasek postępu zmieniają się razem z obrazem, więc widać nie tylko
 efekt, ale i to, na którym etapie prac się jest oraz który to dzień remontu.
@@ -26,28 +29,39 @@ Klatki i wideo wygenerowałem w Higgsfield.
 2. **Cztery klipy po 5 s** (`media/video/etap-1…4.mp4`) — model `kling3_0`, tryb
    `std`, bez dźwięku. Każdy klip dostał klatkę początkową i końcową z pary sąsiednich
    obrazów: klip 1 to `k1 → k2`, klip 2 to `k2 → k3` i tak dalej. Klip N kończy się
-   dokładnie tą klatką, którą zaczyna klip N+1, więc podmiana pliku w trakcie
-   przewijania jest niewidoczna i nie trzeba było sklejać ich w jeden materiał.
+   dokładnie tą klatką, którą zaczyna klip N+1, więc podmiana pliku w chwili,
+   gdy jeden się kończy, jest niewidoczna i nie trzeba było sklejać ich w jeden materiał.
 
 Na tej maszynie nie ma `ffmpeg`, więc klipy zostały tak, jak przyszły z generatora,
 a klatki przekonwertowałem do JPEG-a systemowym `sips` (2000 px, jakość 78).
 Oryginalne PNG-i z generatora (po 5–7 MB) zostały poza repozytorium.
 
-## Jak działa scrollowanie
+## Jak działa odtwarzanie
 
 `js/main.js`, sekcja HERO:
 
-- kontener `.hero` ma wysokość 460vh, a `.hero-sticky` jest przyklejony (`position: sticky`),
-- postęp przewijania po tym kontenerze normalizuję do zakresu 0–1 i wygładzam lerpem
-  w pętli `requestAnimationFrame` (bez tego scrub jest szarpany na trackpadzie),
-- `g = postęp × 4` daje numer etapu (część całkowita) i pozycję w klipie (część ułamkowa),
-- aktywny `<video>` dostaje `currentTime = pozycja × długość klipu`, pozostałe są ukryte,
-- `currentTime` ustawiam tylko przy zmianie większej niż 0,03 s, żeby nie zarzynać dekodera.
+- cztery `<video>` leżą na sobie, widoczny jest tylko aktywny,
+- na `ended` klipu N przełączam na N+1 i wywołuję `play()`; po czwartym film stoi
+  1,8 s na gotowym wnętrzu i wraca do początku,
+- podpis etapu i pasek postępu idą za `currentTime` aktywnego klipu (pętla
+  `requestAnimationFrame`),
+- **film rusza dopiero, gdy zejdzie kurtyna preloadera** — obserwuję klasę `loaded`
+  na `<body>`, bo dodaje ją zarówno preloader, jak i bezpiecznik w `<head>`.
+  Bez tego pierwsze sekundy stanu surowego przelatywały za kurtyną,
+- poza ekranem film jest wstrzymany (`IntersectionObserver`), a po powrocie do karty
+  wznawia się od miejsca, w którym przeglądarka go zatrzymała (`visibilitychange`).
 
-**Zabezpieczenia:** jeżeli któryś plik wideo się nie wczyta (albo użytkownik ma
-włączone `prefers-reduced-motion`, albo ekran węższy niż 760 px), strona przełącza się
-na przenikanie pięciu statycznych klatek. Ten sam efekt, zero kosztu dekodowania wideo —
-i strona wygląda poprawnie także wtedy, gdy repozytorium sklonuje ktoś bez plików mp4.
+**Zabezpieczenia:**
+
+- jeśli któryś plik wideo się nie wczyta, hero przechodzi na pięć statycznych klatek
+  zmieniających się na zegarze,
+- przy `prefers-reduced-motion` od razu widać gotowe wnętrze, bez ruchu,
+- jeśli przeglądarka zablokuje autoodtwarzanie (np. iPhone w trybie oszczędzania
+  energii — `NotAllowedError`), też przechodzimy na klatki. **Tylko** przy tym błędzie
+  i tylko zanim cokolwiek zagrało: `play()` odrzuca również karta w tle albo przerwane
+  odtwarzanie, a to nie jest powód, żeby na stałe zamienić film na slajdy.
+  W pierwszym podejściu każde odrzucenie przełączało hero na klatki — wystarczyło
+  przełączyć kartę w trakcie filmu.
 
 ## Warstwa wizualna
 
