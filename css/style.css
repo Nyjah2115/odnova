@@ -210,6 +210,21 @@ body.menu-open .mobile-menu{ clip-path:circle(150% at 92% 5%); pointer-events:au
   .rail-seg.nastepny .rail-bar{ animation:none; background:rgba(232,220,204,.6); }
 }
 
+/* przyciski w hero z wideo — w miejscu, gdzie w sekcji etapow stoi pasek */
+.hero-cta{ display:flex; gap:12px; align-self:flex-start; flex-wrap:wrap; }
+.hero-cta .btn{ width:auto; gap:22px; }
+.hero-cta .btn:not(.solid){
+  background:rgba(28,24,20,.36); color:#fff;
+  backdrop-filter:blur(24px) saturate(150%); -webkit-backdrop-filter:blur(24px) saturate(150%);
+  border:1px solid rgba(255,255,255,.18);
+}
+.hero-cta .btn:not(.solid):hover{ background:rgba(28,24,20,.55); color:#fff; }
+/* wideo: przy zapetleniu krotkie przygaszenie, zeby przejscie z salonu z powrotem
+   do holu nie bylo twardym cieciem */
+#wideoDom{ transition:opacity .6s linear; }
+#wideoDom.gasnie{ opacity:.0; }
+.hero--wideo .stage{ background:#15120f; }
+
 .scroll-hint{
   position:absolute; left:50%; bottom:26px; transform:translateX(-50%); z-index:4;
   transition:opacity .6s;
@@ -672,8 +687,8 @@ body.loaded .pre{ clip-path:inset(0 0 100% 0); opacity:0; pointer-events:none; }
 .pre-num{ font-size:11px; letter-spacing:.2em; color:rgba(255,255,255,.45); font-variant-numeric:tabular-nums; }
 
 /* zawartosc wchodzi po kurtynie */
-.hero-h1, .hero-bar, .nav{ transition:opacity .9s var(--ease) .15s, transform .9s var(--ease) .15s, padding .6s var(--ease), color .5s var(--ease); }
-body:not(.loaded) .hero-h1, body:not(.loaded) .hero-bar, body:not(.loaded) .nav{ opacity:0; transform:translateY(22px); }
+.hero-h1, .hero-bar, .hero-cta, .nav{ transition:opacity .9s var(--ease) .15s, transform .9s var(--ease) .15s, padding .6s var(--ease), color .5s var(--ease); }
+body:not(.loaded) .hero-h1, body:not(.loaded) .hero-bar, body:not(.loaded) .hero-cta, body:not(.loaded) .nav{ opacity:0; transform:translateY(22px); }
 
 /* ============================================================
    PASEK POSTEPU STRONY
@@ -817,6 +832,8 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   .nav-links{ display:none; }
   .burger{ display:block; }
   .hero-top{ position:static; margin-top:auto; }
+  .hero-cta{ margin-top:22px; flex-direction:column; align-self:stretch; }
+  .hero-cta .btn{ width:100%; }
   .hero-inner{ padding-bottom:clamp(28px,5vh,52px); }
   .hero-h1{ font-size:clamp(30px,8.8vw,48px); max-width:none; }
   /* Na telefonie nazwa etapu i cztery przyciski nie mieszczą się w jednym rzędzie

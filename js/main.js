@@ -1,6 +1,7 @@
 /* ============================================================
    ODNOVA — logika strony
-   Sercem jest hero: 4 klipy po 5 s, odtwarzane po kolei w petli.
+   Hero: wideo z przejsciem przez dom. Nizej sekcja etapow: 4 klipy po 5 s,
+   uruchamiane kliknieciem.
    Klip N konczy sie dokladnie ta klatka, ktora zaczyna sie klip N+1,
    wiec przelaczenie miedzy nimi jest niewidoczne.
    ============================================================ */
@@ -32,6 +33,7 @@ $$('#mobileMenu a').forEach(a => a.addEventListener('click', () => document.body
 /* ————————————————— HERO ————————————————— */
 const hero    = $('.hero');
 const sticky  = $('#heroSticky');
+const heroWideoSticky = $('.hero--wideo .hero-sticky');
 const vids    = [0,1,2,3].map(i => $('#v' + i));
 const frames  = [0,1,2,3,4].map(i => $('#frame' + i));
 const items   = $$('.stage-item');
@@ -188,8 +190,38 @@ if (reduced) {
       // przy podpieciu i bez tej flagi puszczalby wideo jeszcze za kurtyna
       if (e.isIntersecting) { if (ruszyl && v.paused && !v.ended) v.play().catch(() => {}); }
       else v.pause();
-    }, { threshold: 0.05 }).observe(hero);
+    }, { threshold: 0.05 }).observe(sticky.closest('.hero'));
   });
+}
+
+/* ————————————————— WIDEO W HERO —————————————————
+   Przejscie przez dom w petli. Na koncu klipu krotko przygasamy obraz i zaczynamy
+   od nowa, zeby skok z salonu z powrotem do holu nie byl twardym cieciem.
+   Poza ekranem wideo stoi. Przy ograniczonym ruchu zostaje sam plakat. */
+const wideoDom = $('#wideoDom');
+if (wideoDom) {
+  if (reduced) {
+    wideoDom.removeAttribute('src');
+    wideoDom.load();
+  } else {
+    wideoDom.loop = false;
+    const zagrajDom = () => { const p = wideoDom.play(); if (p && p.catch) p.catch(() => {}); };
+    wideoDom.addEventListener('timeupdate', () => {
+      const d = wideoDom.duration;
+      if (isFinite(d) && d - wideoDom.currentTime < 0.65) wideoDom.classList.add('gasnie');
+    });
+    wideoDom.addEventListener('ended', () => {
+      wideoDom.currentTime = 0;
+      zagrajDom();
+      setTimeout(() => wideoDom.classList.remove('gasnie'), 60);
+    });
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) zagrajDom(); else wideoDom.pause();
+    }, { threshold: 0.05 }).observe(hero);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && hero.getBoundingClientRect().bottom > 0) zagrajDom();
+    });
+  }
 }
 
 /* --- podpisy etapow i pasek postepu --- */
@@ -209,7 +241,7 @@ const heroTick = () => {
     const dur = (isFinite(v.duration) && v.duration > 0) ? v.duration : CLIP;
     paintStage(aktywny, aktywny + clamp(v.currentTime / dur, 0, 1));
   }
-  sticky.classList.toggle('moved', scrollY > 20);
+  if (heroWideoSticky) heroWideoSticky.classList.toggle('moved', scrollY > 20);
 };
 
 /* --- petla rAF --- */

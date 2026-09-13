@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ODNOVA — remonty i wykończenia mieszkań pod klucz</title>
-<meta name="description" content="ODNOVA — koncepcyjny landing page firmy remontowej. Hero pokazuje kliknięciami cztery etapy remontu: od surowego stanu do urządzonego wnętrza.">
+<meta name="description" content="ODNOVA — koncepcyjny landing page firmy remontowej. Hero z przejściem przez gotowy dom, niżej cztery etapy remontu uruchamiane kliknięciem.">
 <meta name="theme-color" content="#fbf8f4">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta property="og:title" content="ODNOVA — od surowych ścian do gotowego domu">
@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=69">
+<link rel="stylesheet" href="css/style.css?v=70">
 <script>
   // Ostatnia deska ratunku: gdyby main.js nie wystartowal, kurtyna preloadera
   // i tak zejdzie, zamiast zostawic uzytkownika przed czarnym ekranem.
@@ -40,7 +40,7 @@
 <header class="nav" id="nav">
   <a class="brand" href="#top"><b>ODNOVA</b><span>Remonty wnętrz</span></a>
   <nav class="nav-links">
-    <a href="#top">Etapy</a>
+    <a href="#etapy">Etapy</a>
     <a href="#zakres">Zakres</a>
     <a href="#realizacje">Realizacje</a>
     <a href="#pakiety">Pakiety</a>
@@ -50,7 +50,7 @@
 </header>
 
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#top"><small>01</small>Etapy</a>
+  <a href="#etapy"><small>01</small>Etapy</a>
   <a href="#zakres"><small>02</small>Zakres</a>
   <a href="#realizacje"><small>03</small>Realizacje</a>
   <a href="#pakiety"><small>04</small>Pakiety</a>
@@ -58,22 +58,14 @@
   <a href="#kontakt"><small>06</small>Wycena</a>
 </div>
 
-<!-- ————————————————— HERO: 4 ETAPY NA KLIKNIĘCIE ————————————————— -->
-<section class="hero" id="top">
-  <div class="hero-sticky" id="heroSticky">
-
-    <div class="stage" id="stage">
-      <!-- klatki statyczne: fallback dla mobile / reduced-motion i poster zanim wideo wstanie -->
-      <img class="frame on" id="frame0" src="media/frames/k1.jpg" alt="Mieszkanie w stanie surowym — gołe ściany, wystające kable, wylewka">
-      <img class="frame" id="frame1" src="media/frames/k2.jpg" alt="Remont w trakcie — płyty gipsowo-kartonowe, instalacje, folia ochronna">
-      <img class="frame" id="frame2" src="media/frames/k3.jpg" alt="Wykończenie — wygładzone i pomalowane ściany, świeża wylewka">
-      <img class="frame" id="frame3" src="media/frames/k4.jpg" alt="Gotowe wnętrze bez mebli — podłoga, listwy, oświetlenie">
-      <img class="frame" id="frame4" src="media/frames/k5.jpg" alt="Urządzony salon po remoncie">
-
-      <video id="v0" src="media/video/etap-1.mp4" muted playsinline preload="auto" disablepictureinpicture></video>
-      <video id="v1" src="media/video/etap-2.mp4" muted playsinline preload="auto" disablepictureinpicture></video>
-      <video id="v2" src="media/video/etap-3.mp4" muted playsinline preload="auto" disablepictureinpicture></video>
-      <video id="v3" src="media/video/etap-4.mp4" muted playsinline preload="auto" disablepictureinpicture></video>
+<!-- ————————————————— HERO: PRZEJŚCIE PRZEZ DOM ————————————————— -->
+<!-- Wideo: Kindel Media, Pexels (pexels.com/video/7578546), licencja Pexels —
+     uzycie bez podpisu. Skompresowane do 1280x720, 1,8 Mbit/s, bez dzwieku. -->
+<section class="hero hero--wideo" id="top">
+  <div class="hero-sticky">
+    <div class="stage">
+      <video class="on" id="wideoDom" src="media/video/dom.mp4" poster="media/video/dom-plakat.jpg"
+             muted loop playsinline preload="auto" disablepictureinpicture aria-hidden="true"></video>
     </div>
 
     <div class="hero-inner">
@@ -83,36 +75,9 @@
         </div>
       </div>
 
-      <div class="hero-bar">
-        <div class="stage-copy" id="stageCopy">
-          <article class="stage-item on">
-            <span class="stage-num">01</span>
-            <h2 class="stage-title">Stan surowy</h2>
-          </article>
-          <article class="stage-item">
-            <span class="stage-num">02</span>
-            <h2 class="stage-title">Instalacje i ściany</h2>
-          </article>
-          <article class="stage-item">
-            <span class="stage-num">03</span>
-            <h2 class="stage-title">Gładzie i malowanie</h2>
-          </article>
-          <article class="stage-item">
-            <span class="stage-num">04</span>
-            <h2 class="stage-title">Odbiór i klucze</h2>
-          </article>
-        </div>
-
-        <!-- Etapy przełącza się kliknięciem, po kolei: 01, 02, 03, 04. Każdy
-             przycisk puszcza swój klip i zatrzymuje się na jego ostatniej klatce.
-             Ten, który czeka na kliknięcie, lekko pulsuje. -->
-        <span class="rail-hint" aria-hidden="true">Kliknij etap</span>
-        <div class="rail" id="rail" role="group" aria-label="Etapy remontu">
-          <button class="rail-seg on nastepny" type="button" aria-label="Etap 1: Stan surowy"><span class="rail-num">01</span><span class="rail-bar"><i></i></span></button>
-          <button class="rail-seg" type="button" aria-label="Etap 2: Instalacje i ściany"><span class="rail-num">02</span><span class="rail-bar"><i></i></span></button>
-          <button class="rail-seg" type="button" aria-label="Etap 3: Gładzie i malowanie"><span class="rail-num">03</span><span class="rail-bar"><i></i></span></button>
-          <button class="rail-seg" type="button" aria-label="Etap 4: Odbiór i klucze"><span class="rail-num">04</span><span class="rail-bar"><i></i></span></button>
-        </div>
+      <div class="hero-cta">
+        <a class="btn solid" href="#kontakt">Bezpłatna wycena <i>→</i></a>
+        <a class="btn" href="#etapy">Zobacz etapy remontu <i>→</i></a>
       </div>
     </div>
 
@@ -401,6 +366,70 @@
   </div>
 </section>
 
+<!-- ————————————————— ETAPY REMONTU (NA KLIKNIĘCIE) ————————————————— -->
+<!-- Byl to kiedys hero. Teraz hero ma wideo z przejsciem przez dom, a ten modul
+     stoi nizej jako osobna sekcja — klasy zostaly te same, wiec style i skrypt
+     dzialaja bez zmian. -->
+<section class="hero hero--etapy" id="etapy">
+  <div class="hero-sticky" id="heroSticky">
+
+    <div class="stage" id="stage">
+      <!-- klatki statyczne: fallback dla mobile / reduced-motion i poster zanim wideo wstanie -->
+      <img class="frame on" id="frame0" src="media/frames/k1.jpg" alt="Mieszkanie w stanie surowym — gołe ściany, wystające kable, wylewka">
+      <img class="frame" id="frame1" src="media/frames/k2.jpg" alt="Remont w trakcie — płyty gipsowo-kartonowe, instalacje, folia ochronna">
+      <img class="frame" id="frame2" src="media/frames/k3.jpg" alt="Wykończenie — wygładzone i pomalowane ściany, świeża wylewka">
+      <img class="frame" id="frame3" src="media/frames/k4.jpg" alt="Gotowe wnętrze bez mebli — podłoga, listwy, oświetlenie">
+      <img class="frame" id="frame4" src="media/frames/k5.jpg" alt="Urządzony salon po remoncie">
+
+      <video id="v0" src="media/video/etap-1.mp4" muted playsinline preload="auto" disablepictureinpicture></video>
+      <video id="v1" src="media/video/etap-2.mp4" muted playsinline preload="auto" disablepictureinpicture></video>
+      <video id="v2" src="media/video/etap-3.mp4" muted playsinline preload="auto" disablepictureinpicture></video>
+      <video id="v3" src="media/video/etap-4.mp4" muted playsinline preload="auto" disablepictureinpicture></video>
+    </div>
+
+    <div class="hero-inner">
+      <div class="hero-top">
+        <div>
+          <h2 class="disp hero-h1">Cztery etapy,<br><em>jeden zespół</em></h2>
+        </div>
+      </div>
+
+      <div class="hero-bar">
+        <div class="stage-copy" id="stageCopy">
+          <article class="stage-item on">
+            <span class="stage-num">01</span>
+            <h2 class="stage-title">Stan surowy</h2>
+          </article>
+          <article class="stage-item">
+            <span class="stage-num">02</span>
+            <h2 class="stage-title">Instalacje i ściany</h2>
+          </article>
+          <article class="stage-item">
+            <span class="stage-num">03</span>
+            <h2 class="stage-title">Gładzie i malowanie</h2>
+          </article>
+          <article class="stage-item">
+            <span class="stage-num">04</span>
+            <h2 class="stage-title">Odbiór i klucze</h2>
+          </article>
+        </div>
+
+        <!-- Etapy przełącza się kliknięciem, po kolei: 01, 02, 03, 04. Każdy
+             przycisk puszcza swój klip i zatrzymuje się na jego ostatniej klatce.
+             Ten, który czeka na kliknięcie, lekko pulsuje. -->
+        <span class="rail-hint" aria-hidden="true">Kliknij etap</span>
+        <div class="rail" id="rail" role="group" aria-label="Etapy remontu">
+          <button class="rail-seg on nastepny" type="button" aria-label="Etap 1: Stan surowy"><span class="rail-num">01</span><span class="rail-bar"><i></i></span></button>
+          <button class="rail-seg" type="button" aria-label="Etap 2: Instalacje i ściany"><span class="rail-num">02</span><span class="rail-bar"><i></i></span></button>
+          <button class="rail-seg" type="button" aria-label="Etap 3: Gładzie i malowanie"><span class="rail-num">03</span><span class="rail-bar"><i></i></span></button>
+          <button class="rail-seg" type="button" aria-label="Etap 4: Odbiór i klucze"><span class="rail-num">04</span><span class="rail-bar"><i></i></span></button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <!-- ————————————————— FAQ ————————————————— -->
 <section id="faq">
   <div class="wrap">
@@ -507,7 +536,7 @@
   </div>
   <div class="foot-in">
     <p>© 2026 ODNOVA — projekt koncepcyjny</p>
-    <p>Hero: 4 etapy remontu uruchamiane kliknięciem</p>
+    <p>Hero: wideo z Pexels (Kindel Media). Etapy remontu: 4 klipy uruchamiane kliknięciem</p>
   </div>
 </footer>
 
@@ -523,6 +552,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
-<script src="js/main.js?v=69"></script>
+<script src="js/main.js?v=70"></script>
 </body>
 </html>

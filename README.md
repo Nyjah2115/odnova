@@ -5,15 +5,22 @@ Koncepcyjny landing page firmy remontowej. Projekt do portfolio.
 
 ## O co chodzi
 
-Cały pomysł siedzi w sekcji głównej. Zamiast zdjęcia w tle jest **jedno ujęcie
-remontu, które ogląda się etapami**: kamera stoi w miejscu, a mieszkanie przechodzi
-przez cztery etapy — od stanu surowego do urządzonego salonu. Każdy etap to klip
-5 s, uruchamiany kliknięciem w pasku pod kadrem: najpierw 01, potem 02, 03 i 04.
+**Hero** to pełnoekranowe wideo z przejściem przez jasny, urządzony dom
+(`media/video/dom.mp4`) — stock z Pexels: Kindel Media, pexels.com/video/7578546,
+licencja Pexels, użycie bez podpisu. Oryginał 1080p (13,9 MB) leży lokalnie
+w `media/video/orig/` poza repo; na stronie jest wersja 1280×720, 1,8 Mbit/s,
+bez dźwięku, 4,7 MB. Na końcu pętli obraz krótko przygasa, żeby skok z salonu
+z powrotem do holu nie był twardym cięciem.
 
-Historia: pierwsza wersja była przewijana scrollem (hero na 460vh, `currentTime`
-liczony z pozycji strony) — za długo się to przewijało. Druga leciała sama jak film.
-Obecna oddaje tempo oglądającemu: klip gra po kliknięciu i zatrzymuje się na
-ostatniej klatce etapu.
+**Niżej na stronie**, przed FAQ, stoi sekcja „Cztery etapy, jeden zespół" — jedno
+ujęcie remontu, które ogląda się etapami: kamera stoi w miejscu, a mieszkanie
+przechodzi od stanu surowego do urządzonego salonu. Każdy etap to klip 5 s,
+uruchamiany kliknięciem w pasku pod kadrem: najpierw 01, potem 02, 03 i 04.
+
+Historia: moduł etapów był wcześniej hero. Pierwsza wersja była przewijana scrollem
+(hero na 460vh) — za długo się to przewijało. Druga leciała sama jak film. Trzecia
+oddała tempo oglądającemu: klip gra po kliknięciu. Na koniec moduł zjechał niżej,
+a hero dostało wideo z przejściem przez dom.
 
 Podpis pod kadrem i pasek postępu zmieniają się razem z obrazem, więc widać nie tylko
 efekt, ale i to, na którym etapie prac się jest oraz który to dzień remontu.
@@ -39,7 +46,7 @@ Oryginalne PNG-i z generatora (po 5–7 MB) zostały poza repozytorium.
 
 ## Jak działa odtwarzanie
 
-`js/main.js`, sekcja HERO:
+`js/main.js`, sekcja HERO (moduł etapów; klasy zostały po czasach, gdy był hero):
 
 - cztery `<video>` leżą na sobie, widoczny jest tylko aktywny; do pierwszego
   kliknięcia na wierzchu stoi statyczna klatka `k1` (Safari potrafi nie namalować
