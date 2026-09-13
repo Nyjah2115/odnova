@@ -5,3 +5,4 @@ media/frames/*.png
 
 # oryginaly wideo przed kompresja
 media/video/orig/
+media/video/*.sb-*
