@@ -142,6 +142,20 @@ body.menu-open .mobile-menu{ clip-path:circle(150% at 92% 5%); pointer-events:au
     linear-gradient(to top, var(--bg) 0%, rgba(251,248,244,.72) 9%, rgba(21,18,15,.42) 40%, rgba(21,18,15,.06) 66%);
 }
 
+/* Hero z wideo: film jest jasny (biale sciany, okna), wiec sam gorny i dolny
+   gradient nie wystarczal — bialy naglowek ginal na scianach. Dochodzi
+   przyciemnienie od lewej, dokladnie tam, gdzie stoi tekst, i ogolne
+   przygaszenie kadru o 25%. Wartosci policzone na szesciu klatkach filmu:
+   najgorszy kontrast naglowka 4,79:1, linku pod nim 8,16:1. */
+.hero--wideo .stage::after{
+  background:
+    linear-gradient(90deg, rgba(21,18,15,.75) 0%, rgba(21,18,15,.6) 45%, rgba(21,18,15,.2) 75%, rgba(21,18,15,0) 100%),
+    linear-gradient(to bottom, rgba(21,18,15,.55) 0%, rgba(21,18,15,0) 26%),
+    linear-gradient(to top, var(--bg) 0%, rgba(251,248,244,.72) 7%, rgba(21,18,15,.28) 22%, rgba(21,18,15,0) 40%),
+    rgba(21,18,15,.25);
+}
+.hero--wideo .hero-h1{ text-shadow:0 2px 30px rgba(21,18,15,.6), 0 1px 3px rgba(21,18,15,.35); }
+
 .hero-inner{
   position:relative; z-index:3; height:100%; max-width:var(--maxw); margin:0 auto;
   padding:0 var(--pad) clamp(56px,10vh,110px); display:flex; flex-direction:column; justify-content:flex-end;
@@ -210,15 +224,34 @@ body.menu-open .mobile-menu{ clip-path:circle(150% at 92% 5%); pointer-events:au
   .rail-seg.nastepny .rail-bar{ animation:none; background:rgba(232,220,204,.6); }
 }
 
-/* przyciski w hero z wideo — w miejscu, gdzie w sekcji etapow stoi pasek */
-.hero-cta{ display:flex; gap:12px; align-self:flex-start; flex-wrap:wrap; }
-.hero-cta .btn{ width:auto; gap:22px; }
-.hero-cta .btn:not(.solid){
-  background:rgba(28,24,20,.36); color:#fff;
-  backdrop-filter:blur(24px) saturate(150%); -webkit-backdrop-filter:blur(24px) saturate(150%);
-  border:1px solid rgba(255,255,255,.18);
+/* Przyciski w hero z wideo. Pierwsze podejscie wzielo .btn z reszty strony —
+   wielkie mono-kapitaliki w prostokatach ciezko siedzialy na filmie. Tu jest
+   lzej: glowny to gliniana pigulka krojem tekstu, drugi to zwykly link
+   z kreska, ktora dociaga sie pod napisem po najechaniu. */
+.hero-cta{ display:flex; align-items:center; gap:clamp(18px,2.4vw,30px); flex-wrap:wrap; margin-top:clamp(26px,4vh,40px); }
+.cta-glowny{
+  display:inline-flex; align-items:center; gap:12px;
+  padding:14px 24px; border-radius:999px;
+  background:var(--clay); color:#fff;
+  font-family:var(--f-body); font-size:15px; font-weight:500; letter-spacing:-.005em;
+  box-shadow:0 12px 30px -14px rgba(180,105,63,.95);
+  transition:background .4s var(--ease), transform .4s var(--ease), box-shadow .4s var(--ease);
 }
-.hero-cta .btn:not(.solid):hover{ background:rgba(28,24,20,.55); color:#fff; }
+.cta-glowny:hover{ background:var(--clay-2); transform:translateY(-2px); box-shadow:0 18px 36px -16px rgba(180,105,63,.95); }
+.cta-link{
+  position:relative; display:inline-flex; align-items:center; gap:10px; padding:6px 0;
+  color:#fff; font-family:var(--f-body); font-size:15px; font-weight:400;
+  text-shadow:0 1px 18px rgba(21,18,15,.55);
+}
+.cta-link::after{
+  content:''; position:absolute; left:0; right:0; bottom:0; height:1px;
+  background:rgba(255,255,255,.55); transform-origin:left; transform:scaleX(.35);
+  transition:transform .5s var(--ease), background .4s;
+}
+.cta-link:hover::after{ transform:scaleX(1); background:#fff; }
+.cta-glowny i, .cta-link i{ font-style:normal; transition:transform .5s var(--ease); }
+.cta-glowny:hover i, .cta-link:hover i{ transform:translateX(4px); }
+
 /* wideo: przy zapetleniu krotkie przygaszenie, zeby przejscie z salonu z powrotem
    do holu nie bylo twardym cieciem */
 #wideoDom{ transition:opacity .6s linear; }
@@ -832,8 +865,13 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   .nav-links{ display:none; }
   .burger{ display:block; }
   .hero-top{ position:static; margin-top:auto; }
-  .hero-cta{ margin-top:22px; flex-direction:column; align-self:stretch; }
-  .hero-cta .btn{ width:100%; }
+  .hero--wideo .stage::after{
+    background:
+      linear-gradient(to bottom, rgba(21,18,15,.5) 0%, rgba(21,18,15,0) 22%),
+      linear-gradient(to top, var(--bg) 0%, rgba(251,248,244,.6) 4%, rgba(21,18,15,.72) 14%, rgba(21,18,15,.55) 45%, rgba(21,18,15,.1) 70%),
+      rgba(21,18,15,.15);
+  }
+  .hero-cta{ margin-top:20px; }
   .hero-inner{ padding-bottom:clamp(28px,5vh,52px); }
   .hero-h1{ font-size:clamp(30px,8.8vw,48px); max-width:none; }
   /* Na telefonie nazwa etapu i cztery przyciski nie mieszczą się w jednym rzędzie
