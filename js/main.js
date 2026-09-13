@@ -36,6 +36,7 @@ const vids    = [0,1,2,3].map(i => $('#v' + i));
 const frames  = [0,1,2,3,4].map(i => $('#frame' + i));
 const items   = $$('.stage-item');
 const segs    = $$('.rail-seg');
+const heroBar = $('.hero-bar');
 const fills   = segs.map(s => $('i', s));
 
 const STAGES = 4;
@@ -86,6 +87,9 @@ let ruszyl = false;             // czy film juz wystartowal po zejsciu kurtyny
 let zagral = false;             // czy ktorykolwiek klip faktycznie ruszyl (event 'playing')
 const graj = idx => {
   ruszyl = true;
+  segs.forEach(el => el.classList.remove('nastepny'));
+  frames.forEach(f => f.classList.remove('on'));
+  heroBar.classList.add('klikniete');
   const v = vids[idx];
   try { v.currentTime = 0; } catch (e) {}
   pokaz(idx);
@@ -100,61 +104,81 @@ const graj = idx => {
     naKlatkach = true;
     videoMode = false;
     vids.forEach(x => x.classList.remove('on'));
-    klatkiNaZegarze();
+    klatkaEtapu(idx);
   });
 };
 
-// Film ma ruszyc dopiero, gdy zejdzie kurtyna preloadera — inaczej pierwsze sekundy
-// (stan surowy) przelatuja za kurtyna i nikt ich nie widzi. Obserwujemy klase 'loaded',
-// bo dodaje ja zarowno preloader, jak i bezpiecznik w <head>.
-const poKurtynie = fn => {
-  if (document.body.classList.contains('loaded')) return fn();
-  const mo = new MutationObserver(() => {
-    if (!document.body.classList.contains('loaded')) return;
-    mo.disconnect();
-    setTimeout(fn, 350);            // kurtyna jest wtedy w polowie drogi w gore
-  });
-  mo.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+// Bez wideo (brak plikow, zablokowane odtwarzanie, ograniczony ruch) etapy dalej
+// sie klika — tylko zamiast klipu od razu pokazuje sie jego ostatnia klatka.
+let naKlatkachEtap = -1;
+const klatkaEtapu = k => {
+  naKlatkachEtap = k;
+  heroBar.classList.add('klikniete');
+  frames.forEach((f, i) => f.classList.toggle('on', i === k + 1));
+  paintStage(k, k + 1);
+  zrobione = Math.max(zrobione, k + 1);
+  oznaczNastepny(zrobione < STAGES ? zrobione : -1);
 };
-
-// Bez wideo (brak plikow) klatki zmieniaja sie na zegarze — ten sam rytm, co film.
 const klatkiNaZegarze = () => {
-  let fi = 0;
-  const pokazKlatke = () => {
-    frames.forEach((f, i) => f.classList.toggle('on', i === fi));
-    paintStage(Math.min(STAGES - 1, fi), fi);
-    fi = (fi + 1) % frames.length;
-  };
-  pokazKlatke();
-  setInterval(pokazKlatke, CLIP * 1000 / 1.6);
+  frames.forEach((f, i) => f.classList.toggle('on', i === 0));
+  paintStage(0, 0);
+  oznaczNastepny(0);
 };
+
+/* --- etapy na klikniecie ---
+   Klip N konczy sie ta sama klatka, ktora zaczyna N+1, wiec kolejne etapy
+   skladaja sie w jeden film, tylko zatrzymywany po kazdym etapie. Klikniecie
+   w etap dalej niz nastepny puszcza po kolei wszystkie brakujace. */
+let cel = -1;                     // do ktorego etapu jedziemy (lancuch klipow)
+let zrobione = 0;                 // ile etapow juz obejrzano po kolei
+const oznaczNastepny = k => {
+  segs.forEach((el, i) => el.classList.toggle('nastepny', i === k));
+};
+const kliknietoEtap = k => {
+  if (!videoMode) return klatkaEtapu(k);
+  const v = vids[aktywny];
+  const trwa = ruszyl && !v.paused && !v.ended;
+  if (trwa) {
+    // w trakcie klipu: dalszy etap wydluza jazde, wczesniejszy puszcza sie od nowa
+    if (k > aktywny) cel = Math.max(cel, k);
+    else { cel = k; graj(k); }
+    return;
+  }
+  if (k < zrobione) { cel = k; graj(k); }        // juz obejrzany — powtorka tego jednego
+  else { cel = k; graj(zrobione); }               // nowy — od pierwszego nieobejrzanego do kliknietego
+};
+segs.forEach((el, i) => el.addEventListener('click', () => kliknietoEtap(i)));
 
 if (reduced) {
-  // przy ograniczonych animacjach od razu gotowe wnetrze, bez ruchu
-  frames.forEach((f, i) => f.classList.toggle('on', i === frames.length - 1));
-  requestAnimationFrame(() => paintStage(STAGES - 1, STAGES));
+  // przy ograniczonych animacjach klikanie pokazuje od razu klatki, bez filmu
+  requestAnimationFrame(klatkiNaZegarze);
 } else {
   Promise.all(vids.map(ready)).then(res => {
-    if (!res.every(Boolean)) return poKurtynie(klatkiNaZegarze);
+    if (!res.every(Boolean)) return klatkiNaZegarze();
     videoMode = true;
-    frames.forEach(f => f.classList.remove('on'));
+    // pierwsza klatka stoi jako zdjecie az do pierwszego klikniecia — Safari potrafi
+    // nie namalowac ani jednej klatki wideo, ktore jeszcze nie ruszylo
+    frames.forEach((f, i) => f.classList.toggle('on', i === 0));
     vids.forEach((v, i) => {
       v.loop = false;
       v.addEventListener('playing', () => { zagral = true; });
       v.addEventListener('ended', () => {
-        if (i < STAGES - 1) graj(i + 1);
-        else setTimeout(() => graj(0), 1800);
+        // klip zostaje na ostatniej klatce; dalej tylko, jesli klikniety byl dalszy etap
+        zrobione = Math.max(zrobione, i + 1);
+        if (i < cel && i < STAGES - 1) return graj(i + 1);
+        cel = -1;
+        oznaczNastepny(zrobione < STAGES ? zrobione : -1);
       });
     });
-    pokaz(0);                         // pierwszy kadr stoi za kurtyna
-    poKurtynie(() => graj(0));
+    pokaz(0);                         // stan surowy czeka na pierwsze klikniecie
+    paintStage(0, 0);
+    oznaczNastepny(0);
 
-    // Po powrocie do karty wznawiamy od miejsca, w ktorym przegladarka zatrzymala film.
+    // Po powrocie do karty wznawiamy tylko przerwany klip — nie puszczamy nowego etapu.
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState !== 'visible' || !videoMode || !ruszyl) return;
       const v = vids[aktywny];
-      if (v.ended) graj(aktywny < STAGES - 1 ? aktywny + 1 : 0);
-      else if (v.paused) v.play().catch(() => {});
+      if (v.paused && !v.ended) v.play().catch(() => {});
     });
 
     // poza ekranem film stoi — nie ma sensu dekodowac czegos, czego nikt nie widzi
@@ -180,7 +204,7 @@ const paintStage = (idx, g) => {
 
 /* --- podpis etapu i pasek postepu ida za czasem odtwarzania --- */
 const heroTick = () => {
-  if (videoMode) {
+  if (videoMode && ruszyl) {
     const v = vids[aktywny];
     const dur = (isFinite(v.duration) && v.duration > 0) ? v.duration : CLIP;
     paintStage(aktywny, aktywny + clamp(v.currentTime / dur, 0, 1));

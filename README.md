@@ -6,13 +6,14 @@ Koncepcyjny landing page firmy remontowej. Projekt do portfolio.
 ## O co chodzi
 
 Cały pomysł siedzi w sekcji głównej. Zamiast zdjęcia w tle jest **jedno ujęcie
-remontu, które odtwarza się samo**: kamera stoi w miejscu, a mieszkanie przechodzi
-na oczach użytkownika przez cztery etapy — od stanu surowego do urządzonego salonu.
-Razem 20 sekund materiału podzielonych po 5 sekund na etap, w pętli.
+remontu, które ogląda się etapami**: kamera stoi w miejscu, a mieszkanie przechodzi
+przez cztery etapy — od stanu surowego do urządzonego salonu. Każdy etap to klip
+5 s, uruchamiany kliknięciem w pasku pod kadrem: najpierw 01, potem 02, 03 i 04.
 
-Pierwsza wersja była przewijana scrollem (hero na 460vh, `currentTime` liczony
-z pozycji strony). Klient wolał, żeby remont leciał jak film, więc hero ma teraz
-jeden ekran, a scroll służy już tylko do zjazdu w dół strony.
+Historia: pierwsza wersja była przewijana scrollem (hero na 460vh, `currentTime`
+liczony z pozycji strony) — za długo się to przewijało. Druga leciała sama jak film.
+Obecna oddaje tempo oglądającemu: klip gra po kliknięciu i zatrzymuje się na
+ostatniej klatce etapu.
 
 Podpis pod kadrem i pasek postępu zmieniają się razem z obrazem, więc widać nie tylko
 efekt, ale i to, na którym etapie prac się jest oraz który to dzień remontu.
@@ -40,28 +41,28 @@ Oryginalne PNG-i z generatora (po 5–7 MB) zostały poza repozytorium.
 
 `js/main.js`, sekcja HERO:
 
-- cztery `<video>` leżą na sobie, widoczny jest tylko aktywny,
-- na `ended` klipu N przełączam na N+1 i wywołuję `play()`; po czwartym film stoi
-  1,8 s na gotowym wnętrzu i wraca do początku,
+- cztery `<video>` leżą na sobie, widoczny jest tylko aktywny; do pierwszego
+  kliknięcia na wierzchu stoi statyczna klatka `k1` (Safari potrafi nie namalować
+  żadnej klatki wideo, które jeszcze nie ruszyło),
+- przyciski `01–04` w pasku puszczają klip danego etapu; po `ended` klip zostaje
+  na ostatniej klatce, a następny etap zaczyna lekko pulsować,
+- kliknięcie w etap dalej niż następny puszcza po kolei wszystkie brakujące klipy
+  (klip N kończy się klatką, którą zaczyna N+1, więc to wygląda jak jeden film),
+- kliknięcie w etap już obejrzany odtwarza tylko ten jeden,
 - podpis etapu i pasek postępu idą za `currentTime` aktywnego klipu (pętla
   `requestAnimationFrame`),
-- **film rusza dopiero, gdy zejdzie kurtyna preloadera** — obserwuję klasę `loaded`
-  na `<body>`, bo dodaje ją zarówno preloader, jak i bezpiecznik w `<head>`.
-  Bez tego pierwsze sekundy stanu surowego przelatywały za kurtyną,
-- poza ekranem film jest wstrzymany (`IntersectionObserver`), a po powrocie do karty
-  wznawia się od miejsca, w którym przeglądarka go zatrzymała (`visibilitychange`).
+- poza ekranem klip jest wstrzymany (`IntersectionObserver`), a po powrocie do karty
+  wznawia się tylko przerwany klip — nowy etap nigdy nie startuje sam.
 
 **Zabezpieczenia:**
 
-- jeśli któryś plik wideo się nie wczyta, hero przechodzi na pięć statycznych klatek
-  zmieniających się na zegarze,
-- przy `prefers-reduced-motion` od razu widać gotowe wnętrze, bez ruchu,
-- jeśli przeglądarka zablokuje autoodtwarzanie (np. iPhone w trybie oszczędzania
-  energii — `NotAllowedError`), też przechodzimy na klatki. **Tylko** przy tym błędzie
+- jeśli któryś plik wideo się nie wczyta, etapy dalej się klika, tylko zamiast klipu
+  od razu pokazuje się jego końcowa klatka,
+- przy `prefers-reduced-motion` tak samo — klikanie przełącza statyczne klatki,
+- jeśli przeglądarka zablokuje odtwarzanie (np. iPhone w trybie oszczędzania
+  energii — `NotAllowedError`), przechodzimy na klatki. **Tylko** przy tym błędzie
   i tylko zanim cokolwiek zagrało: `play()` odrzuca również karta w tle albo przerwane
   odtwarzanie, a to nie jest powód, żeby na stałe zamienić film na slajdy.
-  W pierwszym podejściu każde odrzucenie przełączało hero na klatki — wystarczyło
-  przełączyć kartę w trakcie filmu.
 
 ## Warstwa wizualna
 

@@ -176,10 +176,39 @@ body.menu-open .mobile-menu{ clip-path:circle(150% at 92% 5%); pointer-events:au
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 
-.rail{ display:flex; gap:7px; flex:0 0 auto; width:clamp(104px,13vw,150px); }
-.rail-seg{ flex:1; }
-.rail-bar{ height:3px; border-radius:3px; background:rgba(255,255,255,.22); position:relative; overflow:hidden; }
+/* Pasek etapów to cztery przyciski. Numer nad kreską mówi, co się kliknie,
+   a cała wysokość przycisku (44 px) jest polem do trafienia palcem. */
+/* podpowiedź przed pierwszym kliknięciem — znika, gdy ktoś już kliknął */
+.rail-hint{
+  font-family:var(--f-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--sand); white-space:nowrap; transition:opacity .4s var(--ease), max-width .4s var(--ease);
+  max-width:12em; overflow:hidden;
+}
+.hero-bar.klikniete .rail-hint{ opacity:0; max-width:0; margin-left:calc(-1 * clamp(18px,2.6vw,34px)); }
+.rail{ display:flex; gap:10px; flex:0 0 auto; width:clamp(200px,20vw,260px); }
+.rail-seg{
+  flex:1; min-height:44px; padding:6px 0 10px; margin:0;
+  display:flex; flex-direction:column; justify-content:flex-end; gap:8px;
+  background:none; border:0; color:rgba(255,255,255,.5); cursor:pointer;
+  font:inherit; text-align:left; -webkit-tap-highlight-color:transparent;
+  transition:color .25s var(--ease);
+}
+.rail-num{ font-family:var(--f-mono); font-size:11px; letter-spacing:.12em; line-height:1; }
+.rail-seg.on, .rail-seg:hover, .rail-seg:focus-visible{ color:#fff; }
+.rail-seg:focus-visible{ outline:2px solid var(--sand); outline-offset:4px; border-radius:4px; }
+.rail-bar{ display:block; height:3px; border-radius:3px; background:rgba(255,255,255,.22); position:relative; overflow:hidden; transition:background .25s var(--ease); }
+.rail-seg:hover .rail-bar{ background:rgba(255,255,255,.4); }
 .rail-bar i{ position:absolute; inset:0; width:0; border-radius:3px; background:linear-gradient(90deg,var(--clay-2),var(--sand)); display:block; }
+/* etap, który czeka na kliknięcie: numer w kolorze piasku i pulsująca kreska */
+.rail-seg.nastepny{ color:var(--sand); }
+.rail-seg.nastepny .rail-bar{ animation:czekaNaKlik 1.6s ease-in-out infinite; }
+@keyframes czekaNaKlik{
+  0%, 100%{ background:rgba(255,255,255,.22); }
+  50%{ background:rgba(232,220,204,.8); }
+}
+@media (prefers-reduced-motion: reduce){
+  .rail-seg.nastepny .rail-bar{ animation:none; background:rgba(232,220,204,.6); }
+}
 
 .scroll-hint{
   position:absolute; left:50%; bottom:26px; transform:translateX(-50%); z-index:4;
@@ -790,9 +819,13 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   .hero-top{ position:static; margin-top:auto; }
   .hero-inner{ padding-bottom:clamp(28px,5vh,52px); }
   .hero-h1{ font-size:clamp(30px,8.8vw,48px); max-width:none; }
-  .hero-bar{ gap:16px; padding:13px 20px; margin-top:22px; }
-  .stage-copy{ width:clamp(160px,52vw,220px); }
-  .rail{ width:clamp(70px,20vw,104px); gap:5px; }
+  /* Na telefonie nazwa etapu i cztery przyciski nie mieszczą się w jednym rzędzie
+     — przyciski spadały poza pasek. Pasek robi się dwupiętrowy: nazwa na górze,
+     pod nią etapy na całą szerokość, więc każdy ma sensowne pole do kliknięcia. */
+  .hero-bar{ gap:10px; padding:13px 20px 8px; margin-top:22px; flex-direction:column; align-items:stretch; align-self:stretch; }
+  .stage-copy{ width:100%; }
+  .rail{ width:100%; gap:10px; }
+  .rail-hint{ display:none; }
   .svc{ grid-template-columns:1fr; }
   .f-row{ grid-template-columns:1fr; }
   .form{ padding:30px 24px; }
