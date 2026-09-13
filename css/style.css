@@ -142,17 +142,17 @@ body.menu-open .mobile-menu{ clip-path:circle(150% at 92% 5%); pointer-events:au
     linear-gradient(to top, var(--bg) 0%, rgba(251,248,244,.72) 9%, rgba(21,18,15,.42) 40%, rgba(21,18,15,.06) 66%);
 }
 
-/* Hero z wideo: film jest jasny (biale sciany, okna), wiec sam gorny i dolny
-   gradient nie wystarczal — bialy naglowek ginal na scianach. Dochodzi
-   przyciemnienie od lewej, dokladnie tam, gdzie stoi tekst, i ogolne
-   przygaszenie kadru o 25%. Wartosci policzone na szesciu klatkach filmu:
-   najgorszy kontrast naglowka 4,79:1, linku pod nim 8,16:1. */
+/* Hero z wideo: film jest jasny (biale sciany, okna), wiec bialy naglowek ginal na
+   scianach. Pierwsza poprawka przygaszala caly kadr i dom robil sie bury, a na dole
+   przejscie jasne-ciemne-przezroczyste dawalo szara mgle. Teraz przyciemnienie jest
+   tylko pod tekstem — miekka elipsa po lewej — reszta filmu zostaje jasna, a do tla
+   strony obraz przechodzi krotkim, czystym zanikiem. Policzone na szesciu klatkach:
+   najgorszy kontrast naglowka 4,16:1 (wymagane 3:1), linku 6,05:1. */
 .hero--wideo .stage::after{
   background:
-    linear-gradient(90deg, rgba(21,18,15,.75) 0%, rgba(21,18,15,.6) 45%, rgba(21,18,15,.2) 75%, rgba(21,18,15,0) 100%),
+    radial-gradient(ellipse 60% 50% at 30% 42%, rgba(21,18,15,.7) 0%, rgba(21,18,15,.55) 50%, rgba(21,18,15,0) 100%),
     linear-gradient(to bottom, rgba(21,18,15,.55) 0%, rgba(21,18,15,0) 26%),
-    linear-gradient(to top, var(--bg) 0%, rgba(251,248,244,.72) 7%, rgba(21,18,15,.28) 22%, rgba(21,18,15,0) 40%),
-    rgba(21,18,15,.25);
+    linear-gradient(to top, var(--bg) 0%, rgba(251,248,244,0) 13%);
 }
 .hero--wideo .hero-h1{ text-shadow:0 2px 30px rgba(21,18,15,.6), 0 1px 3px rgba(21,18,15,.35); }
 
