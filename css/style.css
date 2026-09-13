@@ -145,14 +145,14 @@ body.menu-open .mobile-menu{ clip-path:circle(150% at 92% 5%); pointer-events:au
 /* Hero z wideo: film jest jasny (biale sciany, okna), wiec bialy naglowek ginal na
    scianach. Pierwsza poprawka przygaszala caly kadr i dom robil sie bury, a na dole
    przejscie jasne-ciemne-przezroczyste dawalo szara mgle. Teraz przyciemnienie jest
-   tylko pod tekstem — miekka elipsa po lewej — reszta filmu zostaje jasna, a do tla
-   strony obraz przechodzi krotkim, czystym zanikiem. Policzone na szesciu klatkach:
+   tylko pod tekstem — miekka elipsa po lewej — reszta filmu zostaje jasna. Na dole
+   nie ma zadnego zaniku do tla: przejscie filmu w jasny kolor wygladalo jak
+   rozmazana plama, wiec film konczy sie rowna krawedzia. Policzone na szesciu klatkach:
    najgorszy kontrast naglowka 4,16:1 (wymagane 3:1), linku 6,05:1. */
 .hero--wideo .stage::after{
   background:
     radial-gradient(ellipse 60% 50% at 30% 42%, rgba(21,18,15,.7) 0%, rgba(21,18,15,.55) 50%, rgba(21,18,15,0) 100%),
-    linear-gradient(to bottom, rgba(21,18,15,.55) 0%, rgba(21,18,15,0) 26%),
-    linear-gradient(to top, var(--bg) 0%, rgba(251,248,244,0) 13%);
+    linear-gradient(to bottom, rgba(21,18,15,.55) 0%, rgba(21,18,15,0) 26%);
 }
 .hero--wideo .hero-h1{ text-shadow:0 2px 30px rgba(21,18,15,.6), 0 1px 3px rgba(21,18,15,.35); }
 
@@ -868,7 +868,7 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   .hero--wideo .stage::after{
     background:
       linear-gradient(to bottom, rgba(21,18,15,.5) 0%, rgba(21,18,15,0) 22%),
-      linear-gradient(to top, var(--bg) 0%, rgba(251,248,244,.6) 4%, rgba(21,18,15,.72) 14%, rgba(21,18,15,.55) 45%, rgba(21,18,15,.1) 70%),
+      linear-gradient(to top, rgba(21,18,15,.72) 0%, rgba(21,18,15,.55) 45%, rgba(21,18,15,.1) 70%),
       rgba(21,18,15,.15);
   }
   .hero-cta{ margin-top:20px; }
