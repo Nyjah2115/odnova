@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=75">
+<link rel="stylesheet" href="css/style.css?v=77">
 <script>
   // Ostatnia deska ratunku: gdyby main.js nie wystartowal, kurtyna preloadera
   // i tak zejdzie, zamiast zostawic uzytkownika przed czarnym ekranem.
@@ -371,7 +371,18 @@
 <!-- Byl to kiedys hero. Teraz hero ma wideo z przejsciem przez dom, a ten modul
      stoi nizej jako osobna sekcja — klasy zostaly te same, wiec style i skrypt
      dzialaja bez zmian. -->
-<section class="hero hero--etapy" id="etapy">
+<section class="etapy-naglowek" id="etapy">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow rise">Etapy remontu</span>
+        <h2 class="sec-h2 rise">Cztery etapy, jeden zespół</h2>
+      </div>
+      <p class="lead rise">Kliknij kolejne etapy pod kadrem i zobacz, jak to samo mieszkanie przechodzi od gołych ścian do urządzonego salonu.</p>
+    </div>
+  </div>
+</section>
+<section class="hero hero--etapy">
   <div class="hero-sticky" id="heroSticky">
 
     <div class="stage" id="stage">
@@ -389,12 +400,6 @@
     </div>
 
     <div class="hero-inner">
-      <div class="hero-top">
-        <div>
-          <h2 class="disp hero-h1">Cztery etapy,<br><em>jeden zespół</em></h2>
-        </div>
-      </div>
-
       <div class="hero-bar">
         <div class="stage-copy" id="stageCopy">
           <article class="stage-item on">
@@ -553,6 +558,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
-<script src="js/main.js?v=75"></script>
+<script src="js/main.js?v=77"></script>
 </body>
 </html>

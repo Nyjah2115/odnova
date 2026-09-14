@@ -228,6 +228,15 @@ body.menu-open .mobile-menu{ clip-path:circle(150% at 92% 5%); pointer-events:au
    wielkie mono-kapitaliki w prostokatach ciezko siedzialy na filmie. Tu jest
    lzej: glowny to gliniana pigulka krojem tekstu, drugi to zwykly link
    z kreska, ktora dociaga sie pod napisem po najechaniu. */
+/* Sekcja etapow: napis stoi nad kadrem, na jasnym tle, a sam kadr jest czysty.
+   Bez napisu na gorze nie ma czego podswietlac, wiec znika gorne przyciemnienie;
+   zostaje tylko dolne pod paskiem z etapami. */
+.etapy-naglowek .wrap{ padding-bottom:clamp(28px,4vh,44px); }
+.etapy-naglowek .sec-head{ margin-bottom:0; }
+.hero--etapy .stage::after{
+  background:linear-gradient(to top, rgba(21,18,15,.45) 0%, rgba(21,18,15,.18) 22%, rgba(21,18,15,0) 40%);
+}
+
 .hero-cta{ display:flex; align-items:center; gap:clamp(18px,2.4vw,30px); flex-wrap:wrap; margin-top:clamp(26px,4vh,40px); }
 .cta-glowny{
   display:inline-flex; align-items:center; gap:12px;
