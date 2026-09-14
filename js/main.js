@@ -151,6 +151,14 @@ const kliknietoEtap = k => {
 };
 segs.forEach((el, i) => el.addEventListener('click', () => kliknietoEtap(i)));
 
+// Strzalka po prawej przelacza na etap po tym, ktory wlasnie widac. Przed pierwszym
+// kliknieciem to etap 01, po czwartym wracamy do poczatku.
+const etapDalej = $('#etapDalej');
+if (etapDalej) etapDalej.addEventListener('click', () => {
+  const widoczny = videoMode ? (ruszyl ? aktywny : -1) : naKlatkachEtap;
+  kliknietoEtap(widoczny + 1 >= STAGES ? 0 : widoczny + 1);
+});
+
 if (reduced) {
   // przy ograniczonych animacjach klikanie pokazuje od razu klatki, bez filmu
   requestAnimationFrame(klatkiNaZegarze);

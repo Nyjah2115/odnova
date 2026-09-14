@@ -237,6 +237,28 @@ body.menu-open .mobile-menu{ clip-path:circle(150% at 92% 5%); pointer-events:au
   background:linear-gradient(to top, rgba(21,18,15,.45) 0%, rgba(21,18,15,.18) 22%, rgba(21,18,15,0) 40%);
 }
 
+/* Wszystkie napisy sekcji etapow na srodku: naglowek nad kadrem i pasek na kadrze. */
+.etapy-naglowek .sec-head{ flex-direction:column; align-items:center; text-align:center; }
+.etapy-naglowek .sec-head .lead{ margin:0 auto; }
+.etapy-naglowek .eyebrow{ justify-content:center; }
+.hero--etapy .hero-bar{ align-self:center; }
+
+/* Strzalka po prawej stronie kadru */
+.etap-dalej{
+  position:absolute; z-index:4; right:clamp(16px,3vw,44px); top:50%; transform:translateY(-50%);
+  width:clamp(52px,5vw,68px); height:clamp(52px,5vw,68px); border-radius:50%;
+  display:grid; place-items:center; cursor:pointer; color:#fff;
+  background:rgba(28,24,20,.36); backdrop-filter:blur(20px) saturate(150%);
+  -webkit-backdrop-filter:blur(20px) saturate(150%);
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:0 18px 40px -22px rgba(0,0,0,.7);
+  transition:background .35s var(--ease), transform .35s var(--ease);
+}
+.etap-dalej svg{ width:42%; height:42%; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; transition:transform .35s var(--ease); }
+.etap-dalej:hover{ background:var(--clay); transform:translateY(-50%) scale(1.06); }
+.etap-dalej:hover svg{ transform:translateX(3px); }
+.etap-dalej:focus-visible{ outline:2px solid var(--sand); outline-offset:4px; }
+
 .hero-cta{ display:flex; align-items:center; gap:clamp(18px,2.4vw,30px); flex-wrap:wrap; margin-top:clamp(26px,4vh,40px); }
 .cta-glowny{
   display:inline-flex; align-items:center; gap:12px;
