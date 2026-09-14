@@ -687,26 +687,13 @@ body > section:not(.scene):not(.steps):not(.closer):not(.contact){
 /* ---------- kontakt ---------- */
 .contact{ background:var(--bg-2); }
 .contact-grid{ display:grid; grid-template-columns:1.15fr .85fr; gap:18px; align-items:start; }
-.form{ display:grid; gap:20px; padding:38px 36px 36px; }
-.f-row{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
-.field label{ font-family:var(--f-mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:9px; font-weight:500; }
-.field input,.field select,.field textarea{
-  width:100%; background:var(--bg); border:1px solid var(--line); border-radius:14px;
-  padding:14px 16px; color:var(--ink); font:400 15px var(--f-body); outline:none;
-  transition:border-color .4s, box-shadow .4s, background .4s;
-}
-.field select{ appearance:none; cursor:pointer;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%238b837a' stroke-width='1.5'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
-  background-repeat:no-repeat; background-position:right 16px center; padding-right:40px; }
-.field textarea{ resize:vertical; min-height:104px; }
-.field input:focus,.field select:focus,.field textarea:focus{
-  border-color:var(--clay-2); background:#fff; box-shadow:0 0 0 4px rgba(180,105,63,.09);
-}
-.consent{ display:flex; gap:12px; align-items:flex-start; font-size:12.5px; color:var(--muted); line-height:1.6; cursor:pointer; }
-.consent input{ margin-top:3px; accent-color:var(--clay); width:16px; height:16px; }
-.form-msg{ font-size:13.5px; color:var(--clay); min-height:20px; line-height:1.6; }
-.form .btn{ width:auto; justify-self:start; padding-left:30px; padding-right:26px; }
-
+/* Kontakt: zamiast formularza duzy numer telefonu */
+.telefon{ padding:clamp(32px,4vw,52px) clamp(28px,4vw,48px); display:flex; flex-direction:column; align-items:flex-start; gap:14px; }
+.telefon-etykieta{ font-family:var(--f-mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-weight:500; }
+.telefon-numer{ font-family:var(--f-disp); font-weight:300; letter-spacing:-.03em; line-height:1; font-size:clamp(40px,5.4vw,78px); white-space:nowrap; transition:color .35s; }
+.telefon-numer:hover{ color:var(--clay); }
+.telefon-opis{ color:var(--ink-2); max-width:36ch; line-height:1.7; }
+.telefon-btn{ width:auto; margin-top:10px; padding-left:30px; padding-right:26px; }
 .cinfo{ display:grid; gap:10px; }
 .cinfo-row{ padding:22px 28px; }
 .cinfo-row span{ font-family:var(--f-mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:8px; font-weight:500; }
@@ -913,8 +900,6 @@ body.lb-open .lb-fig img{ transform:none; opacity:1; }
   .rail{ width:100%; gap:10px; }
   .rail-hint{ display:none; }
   .svc{ grid-template-columns:1fr; }
-  .f-row{ grid-template-columns:1fr; }
-  .form{ padding:30px 24px; }
   .proc-row{ padding:24px 24px; }
   .faq-i{ padding:0 24px; }
   .scroll-hint{ display:none; }

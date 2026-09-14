@@ -193,7 +193,7 @@ Po hero strona wchodzi od razu w zakres prac — sekcja ze statystykami („240 
 - **Proces** — pięć kroków z numerem w kółku i tygodniem, w którym się dzieją.
 - **Realizacje** — przypięty przejazd w bok przez sześć wnętrz.
 - **Pakiety** — trzy karty cenowe, środkowa ciemna jako wyróżniona.
-- **Opinie** z inicjałami, **FAQ** (akordeon), **formularz wyceny** (waliduje się, ale nic nie wysyła).
+- **Opinie** z inicjałami, **FAQ** (akordeon), a na końcu **wycena przez telefon**: duży klikalny numer, godziny i adres — bez formularza.
 
 ## Zdjęcia w realizacjach
 
@@ -216,8 +216,7 @@ media/realizacje/bg1–3.jpg trzy kadry na pełny ekran
 
 ## Uwagi
 
-- Formularz jest wyłącznie po stronie przeglądarki — na prawdziwej stronie trzeba
-  podpiąć backend albo usługę typu Formspree.
+- Formularz wyceny został usunięty na prośbę klienta — kontakt ma iść przez telefon.
 - Numer telefonu, adres i e-mail w stopce są wymyślone; domena `odnova.example`
   jest celowo z puli zarezerwowanej na przykłady.
 - Ceny w pakietach i statystyki (240 mieszkań, 12 lat, 47 dni) to dane demonstracyjne.

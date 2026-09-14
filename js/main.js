@@ -342,21 +342,6 @@ $$('.faq-i').forEach(item => {
   });
 });
 
-/* ————————————————— FORMULARZ (bez wysylki) ————————————————— */
-const form = $('#form');
-if (form) {
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const msg = $('#formMsg');
-    const n = $('#n').value.trim(), t = $('#t').value.trim(), c = $('#c').checked;
-    if (n.length < 3)              { msg.textContent = 'Podaj imię i nazwisko.'; return; }
-    if (t.replace(/\D/g, '').length < 9) { msg.textContent = 'Podaj numer telefonu (9 cyfr).'; return; }
-    if (!c)                        { msg.textContent = 'Zaznacz zgodę na kontakt.'; return; }
-    msg.style.color = '#8fbf87';
-    msg.textContent = 'To jest strona pokazowa — formularz nie wysyła danych. Na prawdziwej stronie zapytanie trafiłoby na skrzynkę firmy.';
-    form.reset();
-  });
-}
 
 
 

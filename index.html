@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=78">
+<link rel="stylesheet" href="css/style.css?v=79">
 <script>
   // Ostatnia deska ratunku: gdyby main.js nie wystartowal, kurtyna preloadera
   // i tak zejdzie, zamiast zostawic uzytkownika przed czarnym ekranem.
@@ -55,7 +55,7 @@
   <a href="#realizacje"><small>03</small>Realizacje</a>
   <a href="#pakiety"><small>04</small>Pakiety</a>
   <a href="#faq"><small>05</small>FAQ</a>
-  <a href="#kontakt"><small>06</small>Wycena</a>
+  <a href="#kontakt"><small>06</small>Zadzwoń</a>
 </div>
 
 <!-- ————————————————— HERO: PRZEJŚCIE PRZEZ DOM ————————————————— -->
@@ -493,45 +493,29 @@
 </section>
 
 <!-- ————————————————— KONTAKT ————————————————— -->
+<!-- Bez formularza: wycena zaczyna sie od rozmowy przez telefon. Numer jest duzy
+     i klikalny, bo na telefonie od razu wybiera polaczenie. -->
 <section class="contact" id="kontakt">
   <div class="wrap">
     <div class="sec-head">
       <div>
         <span class="eyebrow rise">Wycena</span>
-        <h2 class="sec-h2 rise">Powiedz, co masz do zrobienia</h2>
+        <h2 class="sec-h2 rise">Zadzwoń i powiedz, co masz do zrobienia</h2>
       </div>
-      <p class="lead rise">Odpowiadamy tego samego dnia roboczego. Pomiar umawiamy w ciągu tygodnia, kosztorys dostajesz do 48 godzin po pomiarze.</p>
+      <p class="lead rise">Wycenę zaczynamy od krótkiej rozmowy. Pomiar umawiamy w ciągu tygodnia, kosztorys dostajesz do 48 godzin po pomiarze.</p>
     </div>
 
     <div class="contact-grid">
-      <form class="tile form rise" id="form" novalidate>
-        <div class="f-row">
-          <div class="field"><label for="n">Imię i nazwisko</label><input id="n" name="n" type="text" placeholder="Jan Kowalski" required></div>
-          <div class="field"><label for="t">Telefon</label><input id="t" name="t" type="tel" placeholder="600 000 000" required></div>
-        </div>
-        <div class="f-row">
-          <div class="field"><label for="m">Metraż</label><input id="m" name="m" type="text" placeholder="np. 55 m²"></div>
-          <div class="field"><label for="z">Zakres</label>
-            <select id="z" name="z">
-              <option>Remont pod klucz</option>
-              <option>Wykończenie deweloperskie</option>
-              <option>Kuchnia lub łazienka</option>
-              <option>Malowanie i podłogi</option>
-              <option>Jeszcze nie wiem</option>
-            </select>
-          </div>
-        </div>
-        <div class="field"><label for="w">Kilka słów o mieszkaniu</label><textarea id="w" name="w" placeholder="Stan deweloperski, dwa pokoje, chcemy przenieść ścianę w kuchni…"></textarea></div>
-        <label class="consent"><input type="checkbox" id="c" required><span>Zgadzam się na kontakt telefoniczny i mailowy w sprawie mojego zapytania.</span></label>
-        <div class="form-msg" id="formMsg"></div>
-        <button class="btn solid" type="submit">Wyślij zapytanie <i>→</i></button>
-      </form>
+      <div class="tile telefon rise">
+        <span class="telefon-etykieta">Telefon</span>
+        <a class="telefon-numer" href="tel:+48500100200">+48 500 100 200</a>
+        <p class="telefon-opis">Odbieramy od razu albo oddzwaniamy tego samego dnia roboczego.</p>
+        <a class="btn solid telefon-btn" href="tel:+48500100200">Zadzwoń teraz <i>→</i></a>
+      </div>
 
       <div class="cinfo rise">
-        <div class="tile cinfo-row"><span>Telefon</span><a href="tel:+48500100200">+48 500 100 200</a></div>
-        <div class="tile cinfo-row"><span>E-mail</span><a href="mailto:kontakt@odnova.example">kontakt@odnova.example</a></div>
-        <div class="tile cinfo-row"><span>Biuro i próbki materiałów</span><p>ul. Warsztatowa 14<br>35-105 Rzeszów</p></div>
         <div class="tile cinfo-row"><span>Godziny</span><p>pon.–pt. 7:00–17:00<br>sob. 9:00–13:00</p></div>
+        <div class="tile cinfo-row"><span>Biuro i próbki materiałów</span><p>ul. Warsztatowa 14<br>35-105 Rzeszów</p></div>
       </div>
     </div>
   </div>
@@ -563,6 +547,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
-<script src="js/main.js?v=78"></script>
+<script src="js/main.js?v=79"></script>
 </body>
 </html>
